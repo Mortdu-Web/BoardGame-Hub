@@ -5,12 +5,18 @@ from flask import Blueprint
 from .config import Config
 
 # Remplace l'ancien `require_permission("showGame")` du site principal.
+# Usage dans les routes : @require_auth()  ou  @require_auth("role")  ou  @require_auth("a", "b", mode="all")
 if Config.AUTH_ENABLED:
-    from auth_client import require_auth as login_required
+    from auth_client import require_auth
 else:
 
-    def login_required(view):
-        return view
+    def require_auth(*roles: str, mode: str = "any"):
+        """Auth desactivee (dev local) : ne controle rien."""
+
+        def decorator(view):
+            return view
+
+        return decorator
 
 
 class GameBlueprint(Blueprint):

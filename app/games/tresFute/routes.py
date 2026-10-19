@@ -1,5 +1,5 @@
 from flask import render_template, request, jsonify
-from app.helpers import login_required, make_blueprint
+from app.helpers import make_blueprint, require_auth
 
 from app.db import (
     create_joueur,
@@ -18,13 +18,13 @@ NOM_JEU = "Très Futé"
 
 
 @bp.route("/")
-@login_required
+@require_auth()
 def page():
     return render_template(bp.get_templates_path("tresFute.html"))
 
 
 @bp.route("/game")
-@login_required
+@require_auth()
 def tresFute_game():
     return render_template(bp.get_templates_path("tresFuteGame.html"))
 
@@ -34,14 +34,14 @@ def tresFute_game():
 # ═══════════════════════════════════════════════════════════════
 
 @bp.route("/api/joueurs", methods=["GET"])
-@login_required
+@require_auth()
 def api_get_joueurs():
     """Retourne la liste des joueurs existants."""
     return jsonify(get_all_joueurs())
 
 
 @bp.route("/api/joueurs", methods=["POST"])
-@login_required
+@require_auth()
 def api_create_joueur():
     """Crée un nouveau joueur. Attend { "prenom": str, "nom": str }."""
     data = request.get_json(silent=True) or {}
@@ -63,14 +63,14 @@ def api_create_joueur():
 # ═══════════════════════════════════════════════════════════════
 
 @bp.route("/api/parties", methods=["GET"])
-@login_required
+@require_auth()
 def api_get_parties():
     """Retourne la liste des parties existantes pour ce jeu."""
     return jsonify(get_parties_by_jeu(NOM_JEU))
 
 
 @bp.route("/api/parties", methods=["POST"])
-@login_required
+@require_auth()
 def api_create_partie():
     """Crée une nouvelle partie (vide). Attend { "nb_joueurs": int }."""
     data = request.get_json(silent=True) or {}
@@ -91,7 +91,7 @@ def api_create_partie():
 # ═══════════════════════════════════════════════════════════════
 
 @bp.route("/submit", methods=["POST"])
-@login_required
+@require_auth()
 def tresFute_submit():
     """
     Enregistre le score d'un joueur pour une partie.

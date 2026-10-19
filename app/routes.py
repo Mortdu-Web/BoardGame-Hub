@@ -4,14 +4,14 @@ from urllib.parse import urlparse
 from flask import Blueprint, current_app, jsonify, redirect, render_template, request, url_for
 
 from . import db
-from .helpers import login_required
+from .helpers import require_auth
 from .registry import discover
 
 bp = Blueprint("jeux", __name__, static_folder="static", static_url_path="/static")
 
 
 @bp.route("/")
-@login_required
+@require_auth()
 def hub():
     games = [g for g in discover().values() if g["slug"] in current_app.blueprints]
     max_players = max((g["players_max"] for g in games), default=1)
@@ -19,7 +19,7 @@ def hub():
 
 
 @bp.route("/players")
-@login_required
+@require_auth()
 def players():
     return jsonify(db.get_all_joueurs())
 
@@ -38,7 +38,7 @@ def _safe_next(url: str | None) -> str:
 
 
 @bp.route("/joueurs/nouveau", methods=["GET", "POST"])
-@login_required
+@require_auth()
 def nouveau_joueur():
     next_url = _safe_next(request.args.get("next") or request.form.get("next"))
     error = None

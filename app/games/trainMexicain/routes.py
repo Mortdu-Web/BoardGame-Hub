@@ -1,7 +1,7 @@
 from flask import jsonify, render_template, request
 
 from app import db
-from app.helpers import login_required, make_blueprint
+from app.helpers import make_blueprint, require_auth
 
 bp = make_blueprint("trainMexicain", __name__, __file__)
 
@@ -14,19 +14,19 @@ def _int(val, default=0):
 
 
 @bp.route("/")
-@login_required
+@require_auth()
 def page():
     return render_template(bp.get_templates_path("trainMexicain.html"))
 
 
 @bp.route("/game")
-@login_required
+@require_auth()
 def trainMexicain_game():
     return render_template(bp.get_templates_path("trainMexicainGame.html"))
 
 
 @bp.route("/submit", methods=["POST"])
-@login_required
+@require_auth()
 def trainMexicain_submit():
     data = request.get_json(silent=True) or {}
     joueurs = data.get("joueurs", [])

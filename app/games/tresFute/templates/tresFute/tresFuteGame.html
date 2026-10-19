@@ -1,0 +1,668 @@
+{% extends "jeux/baseScore.html" %}
+
+{% block score_styles %}
+<link rel="stylesheet" href="{{ url_for('tresFute.static', filename='css/tresFute.css') }}"/>
+{% endblock %}
+
+{% block score_title %}Très Futé{% endblock %}
+{% block score_subtitle %}Fiche de score interactive{% endblock %}
+
+{% block submit_url %}{{ url_for('tresFute.tresFute_submit') }}{% endblock %}
+
+
+{% block content %}
+<main class="tf-main">
+
+  <div class="page-header">
+    <h1>🦊 Très Futé</h1>
+    <p>Fiche de score interactive — cochez et saisissez vos points</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ZONE DES SCORES                             -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="tf-score-zone" id="tf-score-zone">
+    <div class="tf-score-chip tf-score-chip--yellow">
+      <span class="tf-score-label">Jaune</span>
+      <span class="tf-score-value" id="score-jaune">0</span>
+    </div>
+    <div class="tf-score-chip tf-score-chip--blue">
+      <span class="tf-score-label">Bleu</span>
+      <span class="tf-score-value" id="score-bleu">0</span>
+    </div>
+    <div class="tf-score-chip tf-score-chip--green">
+      <span class="tf-score-label">Vert</span>
+      <span class="tf-score-value" id="score-vert">0</span>
+    </div>
+    <div class="tf-score-chip tf-score-chip--orange">
+      <span class="tf-score-label">Orange</span>
+      <span class="tf-score-value" id="score-orange">0</span>
+    </div>
+    <div class="tf-score-chip tf-score-chip--purple">
+      <span class="tf-score-label">Violet</span>
+      <span class="tf-score-value" id="score-violet">0</span>
+    </div>
+    <div class="tf-score-chip tf-score-chip--white">
+      <span class="tf-score-label">🦊 Renards</span>
+      <span class="tf-score-value" id="score-blanc">0</span>
+    </div>
+    <div class="tf-score-chip tf-score-chip--total">
+      <span class="tf-score-label">Total</span>
+      <span class="tf-score-value" id="score-total">0</span>
+    </div>
+  </section>
+
+  <div class="tf-sheet" id="tf-sheet">
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION DES TOURS                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-tours-section">
+      <div class="tf-section-label">tours</div>
+        <div class="tf-tours-container">
+            <case-fute cochable>1</case-fute>
+            <case-fute cochable>2</case-fute>
+            <case-fute cochable>3</case-fute>
+            <case-fute cochable>4</case-fute>
+            <case-fute cochable>5</case-fute>
+            <case-fute cochable>6</case-fute>
+        </div>
+        <div class="tf-tours-container-bonus">
+            <case-fute cochable>🔄</case-fute>
+            <case-fute cochable>+1</case-fute>
+            <case-fute cochable>🔄</case-fute>
+            <case-fute cochable>X/6</case-fute>
+            <case-fute >3j</case-fute>
+            <case-fute >1|2j</case-fute>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION DES REFRESH                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-refresh-section">
+      <div class="tf-section-label">refresh</div>
+        <div class="tf-refresh-container">
+            <case-fute>🔄</case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION DES +1                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-plusOne-section">
+      <div class="tf-section-label">+1</div>
+        <div class="tf-plusOne-container">
+            <case-fute>+1</case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+            <case-fute entourable></case-fute>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTIONS JAUNE + BLEU (côte à côte)         -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="tf-yellow-blue-row">
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION JAUNE                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-yellow-section">
+      <div class="tf-section-label">yellow</div>
+        <div class="tf-yellow-container">
+            <div class="tf-yellow-grid">
+                <div class="tf-yellow-row">
+                    <case-fute cochable>3</case-fute>
+                    <case-fute cochable>6</case-fute>
+                    <case-fute cochable>5</case-fute>
+                    <case-fute cochee></case-fute>
+                    <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xblue.svg') }}" class="case-img" alt="Xblue"></case-fute>
+                </div>
+                <div class="tf-yellow-row">
+                    <case-fute cochable>2</case-fute>
+                    <case-fute cochable>1</case-fute>
+                    <case-fute cochee></case-fute>
+                    <case-fute cochable>5</case-fute>
+                    <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/4orange.svg') }}" class="case-img" alt="4orange"></case-fute>
+                </div>
+                <div class="tf-yellow-row">
+                    <case-fute cochable>1</case-fute>
+                    <case-fute cochee></case-fute>
+                    <case-fute cochable>2</case-fute>
+                    <case-fute cochable>4</case-fute>
+                    <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xvert.svg') }}" class="case-img" alt="Xvert"></case-fute>
+                </div>
+                <div class="tf-yellow-row">
+                    <case-fute cochee></case-fute>
+                    <case-fute cochable>3</case-fute>
+                    <case-fute cochable>4</case-fute>
+                    <case-fute cochable>6</case-fute>
+                    <case-fute entourable class="renard">🦊</case-fute>
+                </div>
+                <div class="tf-yellow-row">
+                    <case-fute entourable>10</case-fute>
+                    <case-fute entourable>14</case-fute>
+                    <case-fute entourable>16</case-fute>
+                    <case-fute entourable>20</case-fute>
+                    <case-fute cochable>+1</case-fute>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION BLEU                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-blue-section">
+      <div class="tf-section-label">blue</div>
+        <div class="tf-blue-container">
+            <div class="tf-blue-score-container">
+                <div class="tf-blue-container">
+                    <case-fute>1</case-fute>
+                    <case-fute>2</case-fute>
+                    <case-fute>4</case-fute>
+                    <case-fute>7</case-fute>
+                    <case-fute>11</case-fute>
+                    <case-fute>16</case-fute>
+                    <case-fute>22</case-fute>
+                    <case-fute>29</case-fute>
+                    <case-fute>37</case-fute>
+                    <case-fute>46</case-fute>
+                    <case-fute>56</case-fute>
+                </div>
+                <div class="tf-blue-container-bonus">
+                    <case-fute >1</case-fute>
+                    <case-fute >2</case-fute>
+                    <case-fute >3</case-fute>
+                    <case-fute >4</case-fute>
+                    <case-fute >5</case-fute>
+                    <case-fute >6</case-fute>
+                    <case-fute >7</case-fute>
+                    <case-fute >8</case-fute>
+                    <case-fute >9</case-fute>
+                    <case-fute >10</case-fute>
+                    <case-fute >11</case-fute>
+                </div>
+            </div>
+
+            <div class="tf-blue-value-container">
+                <div class="tf-blue-grid">
+                    <div class="tf-blue-row">
+                        <case-fute></case-fute>
+                        <case-fute cochable>2</case-fute>
+                        <case-fute cochable>3</case-fute>
+                        <case-fute cochable>4</case-fute>
+                        <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/5orange.svg') }}" class="case-img" alt="5orange"></case-fute>
+                    </div>
+                    <div class="tf-blue-row">
+                        <case-fute cochable>5</case-fute>
+                        <case-fute cochable>6</case-fute>
+                        <case-fute cochable>7</case-fute>
+                        <case-fute cochable>8</case-fute>
+                        <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xjaune.svg') }}" class="case-img" alt="Xjaune"></case-fute>
+                    </div>
+                    <div class="tf-blue-row">
+                        <case-fute cochable>9</case-fute>
+                        <case-fute cochable>10</case-fute>
+                        <case-fute cochable>11</case-fute>
+                        <case-fute cochable>12</case-fute>
+                        <case-fute entourable class="renard">🦊</case-fute>
+                    </div>
+                    <div class="tf-blue-row">
+                        <case-fute cochable>🔄</case-fute>
+                        <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xvert.svg') }}" class="case-img" alt="Xvert"></case-fute>
+                        <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/6violet.svg') }}" class="case-img" alt="6violet"></case-fute>
+                        <case-fute cochable>+1</case-fute>
+                        <case-fute></case-fute>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION Verte                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-green-section">
+      <div class="tf-section-label">green</div>
+        <div class="tf-green-grid">
+        <div class="tf-green-score-container">
+            <case-fute>1</case-fute>
+            <case-fute>3</case-fute>
+            <case-fute>6</case-fute>
+            <case-fute>10</case-fute>
+            <case-fute>15</case-fute>
+            <case-fute>21</case-fute>
+            <case-fute>28</case-fute>
+            <case-fute>36</case-fute>
+            <case-fute>45</case-fute>
+            <case-fute>55</case-fute>
+            <case-fute>66</case-fute>
+        </div>
+        <div class="tf-green-container">
+            <case-fute cochable>≥1</case-fute>
+            <case-fute cochable>≥2</case-fute>
+            <case-fute cochable>≥3</case-fute>
+            <case-fute cochable>≥4</case-fute>
+            <case-fute cochable>≥5</case-fute>
+            <case-fute cochable>≥1</case-fute>
+            <case-fute cochable>≥2</case-fute>
+            <case-fute cochable>≥3</case-fute>
+            <case-fute cochable>≥4</case-fute>
+            <case-fute cochable>≥5</case-fute>
+            <case-fute cochable>≥6</case-fute>
+        </div>
+        <div class="tf-green-bonus-container">
+            <case-fute></case-fute>
+            <case-fute></case-fute>
+            <case-fute></case-fute>
+            <case-fute cochable>+1</case-fute>
+            <case-fute></case-fute>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xblue.svg') }}" class="case-img" alt="Xblue"></case-fute>
+            <case-fute entourable class="renard">🦊</case-fute>
+            <case-fute></case-fute>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/6violet.svg') }}" class="case-img" alt="6violet"></case-fute>
+            <case-fute cochable>🔄</case-fute>
+            <case-fute></case-fute>
+        </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION Orange                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-orange-section">
+      <div class="tf-section-label">orange</div>
+        <div class="tf-orange-container">
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+            <case-fute modifiable></case-fute>
+        </div>
+
+        <div class="tf-orange-bonus-container">
+            <case-fute></case-fute>
+            <case-fute></case-fute>
+            <case-fute cochable>🔄</case-fute>
+            <case-fute>x2</case-fute>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xjaune.svg') }}" class="case-img" alt="Xjaune"></case-fute>
+            <case-fute cochable>+1</case-fute>
+            <case-fute>x2</case-fute>
+            <case-fute entourable class="renard">🦊</case-fute>
+            <case-fute>x2</case-fute>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/6violet.svg') }}" class="case-img" alt="6violet"></case-fute>
+            <case-fute>x3</case-fute>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION Purple                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tf-section tf-purple-section">
+      <div class="tf-section-label">purple</div>
+        <div class="tf-purple-container">
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+            <div class="purple-middle"><</div>
+            <case-fute modifiable></case-fute>
+        </div>
+
+        <div class="tf-purple-bonus-container">
+            <case-fute></case-fute>
+            <div class="purple-middle"></div>
+            <case-fute></case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable>🔄</case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xblue.svg') }}" class="case-img" alt="Xblue"></case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable>+1</case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xjaune.svg') }}" class="case-img" alt="Xjaune"></case-fute>
+            <div class="purple-middle"></div>
+            <case-fute entourable class="renard">🦊</case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable>🔄</case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/Xvert.svg') }}" class="case-img" alt="Xvert"></case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable><img src="{{ url_for('tresFute.static', filename='img/6orange.svg') }}" class="case-img" alt="6orange"></case-fute>
+            <div class="purple-middle"></div>
+            <case-fute cochable>+1</case-fute>
+        </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ZONE DES DÉS                               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="tf-dice-zone" id="tf-dice-zone">
+
+    <div class="tf-dice-header">
+      <h2 class="tf-dice-title">🎲 Dés</h2>
+      <div class="tf-dice-controls">
+        <button class="tf-dice-reroll-btn" id="btn-reroll" type="button">
+          🎲 Lancer les dés
+        </button>
+        <button class="tf-dice-reset-btn" id="btn-dice-reset" type="button">
+          🔁 Reset dés
+        </button>
+      </div>
+    </div>
+
+    <!-- Dé sélectionné -->
+    <div class="tf-dice-selected-wrapper" id="dice-selected-wrapper" hidden>
+      <div class="tf-dice-aside-label">Sélectionné</div>
+      <div class="tf-dice-selected" id="dice-selected"></div>
+    </div>
+
+    <!-- Dés actifs (pas encore mis de côté) -->
+    <div class="tf-dice-active" id="dice-active">
+      <jeu-dice size="6" color="blue"></jeu-dice>
+      <jeu-dice size="6" color="white"></jeu-dice>
+      <jeu-dice size="6" color="orange"></jeu-dice>
+      <jeu-dice size="6" color="gold"></jeu-dice>
+      <jeu-dice size="6" color="purple"></jeu-dice>
+      <jeu-dice size="6" color="green"></jeu-dice>
+    </div>
+
+    <!-- Dés mis de côté (valeur < dé sélectionné) -->
+    <div class="tf-dice-aside-wrapper" id="dice-aside-wrapper" hidden>
+      <div class="tf-dice-aside-label">Mis de côté</div>
+      <div class="tf-dice-aside" id="dice-aside"></div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- MODALE D'ENVOI DU SCORE                     -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="tf-modal-overlay" id="tf-modal-overlay" hidden>
+    <div class="tf-modal" role="dialog" aria-modal="true" aria-labelledby="tf-modal-title">
+      <div class="tf-modal-header">
+        <h2 id="tf-modal-title">📤 Envoyer le score</h2>
+        <button type="button" class="tf-modal-close" id="tf-modal-close" aria-label="Fermer">✕</button>
+      </div>
+
+      <form id="tf-modal-form" class="tf-modal-form">
+
+        <!-- Joueur -->
+        <div class="tf-modal-field">
+          <label for="tf-select-joueur">Joueur</label>
+          <select id="tf-select-joueur" required>
+            <option value="" disabled selected>— Choisir un joueur —</option>
+            <option value="__new__">➕ Nouveau joueur…</option>
+          </select>
+          <div class="tf-modal-new-fields" id="tf-new-joueur-fields" hidden>
+            <input type="text" id="tf-new-joueur-prenom" placeholder="Prénom">
+            <input type="text" id="tf-new-joueur-nom" placeholder="Nom">
+          </div>
+        </div>
+
+        <!-- Partie -->
+        <div class="tf-modal-field">
+          <label for="tf-select-partie">Partie</label>
+          <select id="tf-select-partie" required>
+            <option value="" disabled selected>— Choisir une partie —</option>
+            <option value="__new__">➕ Nouvelle partie…</option>
+          </select>
+          <div class="tf-modal-new-fields" id="tf-new-partie-fields" hidden>
+            <input type="number" id="tf-new-partie-nb-joueurs" placeholder="Nombre de joueurs" min="1" step="1">
+          </div>
+        </div>
+
+        <!-- Score -->
+        <div class="tf-modal-field">
+          <label for="tf-modal-score">Score</label>
+          <input type="number" id="tf-modal-score" readonly>
+        </div>
+
+        <div class="tf-modal-error" id="tf-modal-error" hidden></div>
+
+        <div class="tf-modal-actions">
+          <button type="button" class="tf-modal-cancel" id="tf-modal-cancel">Annuler</button>
+          <button type="submit" class="tf-modal-submit" id="tf-modal-submit">Valider</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <button class="btn-envoyer" id="btn-envoyer-score" type="button">📤 Envoyer le score</button>
+    <button class="btn-reset-sauvegarde" id="btn-reset-sauvegarde" type="button">🗑️ Réinitialiser la fiche</button>
+  </div>
+  <style>
+    .btn-reset-sauvegarde {
+      padding: 0 28px;
+      height: 48px;
+      border-radius: var(--tf-radius-md, 18px);
+      border: 2px solid #7d2e2e;
+      background: linear-gradient(135deg, #501e1e, #301111);
+      color: #e0a0a0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+    .btn-reset-sauvegarde:hover {
+      background: linear-gradient(135deg, #702525, #451616);
+      border-color: #ae4f4f;
+      color: #ffd0d0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(174, 79, 79, 0.35);
+    }
+    .btn-reset-sauvegarde:active { transform: scale(0.97); }
+  </style>
+  <style>
+    .control-group {
+      display: flex;
+      justify-content: center;
+      margin: 28px auto 8px;
+    }
+
+    .btn-envoyer {
+      padding: 0 28px;
+      height: 48px;
+      border-radius: var(--tf-radius-md, 18px);
+      border: 2px solid #2e7d4f;
+      background: linear-gradient(135deg, #1e5030, #113018);
+      color: #a0e0c0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+    .btn-envoyer:hover {
+      background: linear-gradient(135deg, #257048, #164522);
+      border-color: #4fae7a;
+      color: #d0ffe6;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(79, 174, 122, 0.35);
+    }
+    .btn-envoyer:active { transform: scale(0.97); }
+
+    .tf-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .tf-modal-overlay[hidden] { display: none; }
+
+    .tf-modal {
+      width: 100%;
+      max-width: 420px;
+      background: #14142c;
+      border: 1px solid #3a3a70;
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      color: #e6e6ff;
+      overflow: hidden;
+    }
+
+    .tf-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid #2a2a55;
+    }
+    .tf-modal-header h2 { margin: 0; font-size: 1.05rem; }
+
+    .tf-modal-close {
+      background: none;
+      border: none;
+      color: #a0a0e0;
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .tf-modal-close:hover { color: #fff; }
+
+    .tf-modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .tf-modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .tf-modal-field label {
+      font-size: 0.78rem;
+      color: #a0a0e0;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .tf-modal-field select,
+    .tf-modal-field input {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #3a3a70;
+      background: #1e1e42;
+      color: #e6e6ff;
+      font-size: 0.9rem;
+    }
+    .tf-modal-field select:focus,
+    .tf-modal-field input:focus {
+      outline: none;
+      border-color: #7070c0;
+    }
+    .tf-modal-field input[readonly] {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+
+    .tf-modal-new-fields {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .tf-modal-new-fields[hidden] { display: none; }
+    .tf-modal-new-fields input {
+      flex: 1 1 0;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .tf-modal-error {
+      background: rgba(220, 60, 60, 0.15);
+      border: 1px solid rgba(220, 60, 60, 0.4);
+      color: #ffb0b0;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+    }
+    .tf-modal-error[hidden] { display: none; }
+
+    .tf-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .tf-modal-cancel,
+    .tf-modal-submit {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .tf-modal-cancel {
+      background: transparent;
+      border-color: #3a3a70;
+      color: #a0a0e0;
+    }
+    .tf-modal-cancel:hover { border-color: #7070b0; color: #d0d0ff; }
+
+    .tf-modal-submit {
+      background: linear-gradient(135deg, #1e5030, #113018);
+      border-color: #2e7d4f;
+      color: #a0e0c0;
+    }
+    .tf-modal-submit:hover { border-color: #4fae7a; color: #d0ffe6; }
+    .tf-modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  </style>
+</main>
+{% endblock %}
+
+{% block game_script %}
+<script type="module" src="{{ url_for('tresFute.static', filename='js/Dice.js') }}"></script>
+<script type="module" src="{{ url_for('tresFute.static', filename='js/Case.js') }}"></script>
+<script src="{{ url_for('tresFute.static', filename='js/calculScore.js') }}"></script>
+<script src="{{ url_for('tresFute.static', filename='js/tresFute.js') }}"></script>
+<script src="{{ url_for('tresFute.static', filename='js/submitScore.js') }}"></script>
+<script src="{{ url_for('tresFute.static', filename='js/sauvegarde.js') }}"></script>
+{% endblock %}

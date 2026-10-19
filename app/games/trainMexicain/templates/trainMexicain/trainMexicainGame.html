@@ -1,0 +1,31 @@
+{% extends "jeux/baseScore.html" %}
+
+{% block title %}Train Mexicain — Tableau des scores{% endblock %}
+
+{% block score_styles %}
+  <link rel="stylesheet" href="{{ url_for('trainMexicain.static', filename='css/trainMexicain.css') }}"/>
+{% endblock %}
+
+{% block score_title %}Train Mexicain — Tableau des scores{% endblock %}
+{% block score_subtitle %}Saisissez les points restants par joueur pour chaque manche (double 12 → double blanc){% endblock %}
+
+{% block extra_controls %}
+  <div class="control-group" id="tour-control">
+    <label>Tour actuel</label>
+    <div id="tour-display" class="tour-display">
+      <span id="tour-icon">🚂</span>
+      <span id="tour-nom">—</span>
+    </div>
+    <button class="btn-next-tour" id="btn-next-tour" type="button">Tour suivant →</button>
+  </div>
+{% endblock %}
+
+{% block submit_url %}{{ url_for('trainMexicain.trainMexicain_submit') }}{% endblock %}
+
+{% block game_script %}
+  <script>
+    const NEW_PLAYER_URL = "{{ url_for('jeux.nouveau_joueur') }}";
+    const BASE_JS_URL = "{{ url_for('jeux.static', filename='js/base.js') }}";
+  </script>
+  <script type="module" src="{{ url_for('trainMexicain.static', filename='js/trainMexicain.js') }}"></script>
+{% endblock %}

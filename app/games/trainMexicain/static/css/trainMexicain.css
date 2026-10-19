@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════
+   trainMexicain.css — styles spécifiques au tableau Train Mexicain
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Badges de manche (double X) ── */
+[class^="badge-d"] {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+.badge-d12 { background: #1a237e; color: #fff; }
+.badge-d11 { background: #283593; color: #fff; }
+.badge-d10 { background: #1565c0; color: #fff; }
+.badge-d9  { background: #0277bd; color: #fff; }
+.badge-d8  { background: #00838f; color: #fff; }
+.badge-d7  { background: #2e7d32; color: #fff; }
+.badge-d6  { background: #558b2f; color: #fff; }
+.badge-d5  { background: #f9a825; color: #000; }
+.badge-d4  { background: #ef6c00; color: #fff; }
+.badge-d3  { background: #d84315; color: #fff; }
+.badge-d2  { background: #b71c1c; color: #fff; }
+.badge-d1  { background: #6a1b9a; color: #fff; }
+.badge-d0  { background: #f5f5f5; color: #333; border: 1.5px solid #bbb; }
+
+/* ── Affichage du tour en cours ── */
+.tour-display {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: #fff3e0;
+  border: 2px solid #ff8f00;
+  border-radius: 8px;
+  padding: .3rem .75rem;
+  font-weight: 700;
+  font-size: 1rem;
+  min-width: 120px;
+}
+
+.btn-next-tour {
+  background: #ff8f00;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: .4rem .9rem;
+  font-weight: 700;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-next-tour:hover { background: #e65100; }
+
+/* ── Conteneur ordre des joueurs ── */
+.ordre-container {
+  background: #fafafa;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1rem 1.25rem 1.25rem;
+  margin: 0 auto 1.5rem;
+  max-width: 480px;
+}
+
+.ordre-title {
+  margin: 0 0 .2rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ordre-subtitle {
+  margin: 0 0 .75rem;
+  font-size: .8rem;
+  color: #888;
+}
+
+/* ── Liste ordonnée (drag & drop) ── */
+.ordre-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.ordre-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: .45rem .75rem;
+  cursor: grab;
+  user-select: none;
+  transition: box-shadow .15s, border-color .15s, background .15s;
+}
+
+.ordre-item:active { cursor: grabbing; }
+
+.ordre-item.dragging {
+  opacity: .5;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.ordre-item.drag-over {
+  border-color: #ff8f00;
+  background: #fff8e1;
+}
+
+/* Joueur actif (c'est son tour) */
+.ordre-item.tour-actif {
+  border-color: #ff8f00;
+  background: #fff3e0;
+  box-shadow: 0 0 0 3px rgba(255,143,0,.25);
+  font-weight: 700;
+}
+
+.ordre-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: #263238;
+  color: #fff;
+  border-radius: 50%;
+  font-size: .78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ordre-actif .ordre-num { background: #ff8f00; }
+
+.ordre-name {
+  flex: 1;
+  font-size: .92rem;
+}
+
+.ordre-grip {
+  color: #bbb;
+  font-size: 1.1rem;
+  cursor: grab;
+}

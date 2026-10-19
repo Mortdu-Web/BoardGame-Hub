@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════
+   oanami.css — Identité visuelle Oanami
+   Surcharges spécifiques au jeu, par-dessus gameScore.css
+   ═══════════════════════════════════════════ */
+
+/* ── Watermark décoratif (comme login.css) ── */
+main::before {
+  content: 'OA';
+  position: fixed;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(160px, 22vw, 300px);
+  font-weight: 300;
+  color: rgba(184, 154, 106, 0.05);
+  pointer-events: none;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  z-index: 0;
+}
+
+/* ── Titre avec em italique ── */
+.page-header h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* ── Largeur dynamique selon le nombre de joueurs ── */
+main { max-width: 960px; }
+main.players-3 { max-width: 1100px; }
+main.players-4 { max-width: 1260px; }
+
+/* ── Coloration saisons spécifique à Oanami ── */
+#score-table tbody tr[data-saison="printemps"] td.cell-label:first-child {
+  color: #7a9e7e;
+}
+
+#score-table tbody tr[data-saison="ete"] td.cell-label:first-child {
+  color: #b89a6a;
+}
+
+#score-table tbody tr[data-saison="automne"] td.cell-label:first-child {
+  color: #a0674a;
+}
+
+#score-table tbody tr[data-saison="hiver"] td.cell-label:first-child {
+  color: #7a8fa0;
+}
+
+/* ── Séparation visuelle entre groupes de saisons ── */
+#score-table tbody tr.season-start td {
+  border-top: 1px solid rgba(184, 154, 106, 0.2);
+}
+
+/* ── Badge type de saison ── */
+.season-type-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: var(--bg);
+}

@@ -1,0 +1,43 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}Train Mexicain{% endblock %}
+
+{% set game_link = url_for('trainMexicain.trainMexicain_game') %}
+
+{% block game_body %}
+  <p>Soyez le premier à jouer tous vos dominos ! Les dominos sont posés sur votre train, sur les trains ouverts des autres joueurs ou sur le Train Mexicain commun.</p>
+
+  <h3>Organisation</h3>
+  <p>Chaque joueur choisit une locomotive de couleur qui servira de marqueur pendant la partie. La locomotive noire est mise de côté : elle marquera le Train Mexicain. Placez tous les dominos face contre table et mélangez-les (on appelle cet ensemble la <strong>Cour des Trains</strong> ou la Réserve). Le nombre de dominos distribués dépend du nombre de joueurs :</p>
+  <ul>
+    <li><strong>2 à 4 joueurs</strong> : 15 dominos chacun</li>
+    <li><strong>5 à 6 joueurs</strong> : 11 dominos chacun</li>
+    <li><strong>7 à 8 joueurs</strong> : 8 dominos chacun</li>
+  </ul>
+  <p>Chaque joueur place ses dominos face visible devant lui. Le joueur possédant le double le plus élevé (double 12 ou moins) commence la partie en plaçant ce domino au centre de la station de train : c'est la <strong>locomotive</strong>.</p>
+
+  <h3>Le jeu</h3>
+  <p>La partie se joue dans le sens des aiguilles d'une montre. À son tour, chaque joueur bâtit son propre train sur l'emplacement de la station le plus proche de lui, en enchaînant des dominos dont les valeurs se correspondent (exemple : 12-12 → 12-5 → 5-7 → 7-8…). Si un joueur n'a pas de domino pour commencer son train, il peut en piocher un dans la Cour des Trains. On ne peut piocher qu'une seule tuile par tour (sauf après avoir joué un double — voir la section <em>Les Doubles</em>). Un joueur ne peut pas piocher s'il possède déjà une tuile jouable.</p>
+
+  <h3>Les wagons (dominos)</h3>
+  <p>Lorsqu'un joueur ne peut jouer aucune de ses tuiles, il pioche un domino dans la Cour des Trains. Si cette tuile est jouable, il la pose immédiatement ; sinon il la garde et passe son tour.</p>
+
+  <h3>Les trains des autres joueurs</h3>
+  <p>Si un joueur ne peut jouer sur son propre train, il place son marqueur (locomotive) à côté de la queue de son train : cela signale aux autres joueurs qu'ils peuvent y poser leurs dominos. Dès que le joueur peut de nouveau jouer sur son propre train, il reprend sa locomotive. On ne peut poser sur le train d'un autre joueur que s'il est marqué d'une petite locomotive.</p>
+
+  <h3>Le Train Mexicain</h3>
+  <p>Si un joueur possède une deuxième tuile qui correspond à la locomotive centrale, il peut s'en servir pour démarrer le <strong>Train Mexicain</strong> (sur un emplacement vacant de la station, ou ailleurs sur la table s'il y a 8 joueurs). On place alors la locomotive noire à côté de ce train : tous les joueurs peuvent y poser en tout temps. Il n'y a qu'un seul Train Mexicain par partie, et il est conseillé de le démarrer le plus tôt possible pour multiplier les possibilités de jeu.</p>
+
+  <h3>Les Doubles</h3>
+  <p>Lorsqu'un joueur pose un domino double, il le place perpendiculairement au train et doit immédiatement poser une deuxième tuile pour compléter le double (exemple : le 8-8 est posé en travers, puis complété avec un 8-3). Si le joueur n'a pas de tuile correspondante, il pioche dans la Cour des Trains. Si la tuile piochée ne convient pas non plus, il la garde, passe son tour et l'obligation de compléter le double passe au joueur suivant. Tant que le double n'est pas complété, toute séquence de jeu normale est suspendue. Si un joueur ne peut pas compléter le double à son tour, il doit placer son marqueur à côté de son train même s'il aurait pu jouer ailleurs. Le jeu régulier reprend avec le joueur qui suit celui ayant complété le double.</p>
+
+  <h3>Dernière tuile</h3>
+  <p>Lorsqu'un joueur pose son avant-dernier domino, il doit le signaler discrètement aux autres : en frappant légèrement sa dernière pièce sur la table ou en donnant un petit coup de locomotive dessus, avant que le joueur suivant n'ait joué (modalité à convenir en début de partie). Si un joueur oublie de faire ce signal, il est contraint de piocher 2 nouveaux dominos dans la Cour des Trains.</p>
+
+  <h3>Fin de la partie</h3>
+  <p>La partie se termine quand un joueur pose son dernier domino, ou quand la Cour des Trains est vide et que personne ne peut jouer. Dans le premier cas, ce joueur remporte la partie. Dans le second, chaque joueur totalise la valeur de ses dominos restants (points indiqués sur les tuiles) ; le joueur ayant le total le plus bas gagne. Un domino blanc vaut 25 points et un double blanc vaut 50 points.</p>
+
+  <h3>Variantes de jeu</h3>
+  <p><strong>13 Rondes de jeu :</strong> Avant de mélanger les dominos, mettez le double 12 de côté comme pièce de départ. À la fin de chaque manche, notez les scores (valeur des dominos restants), puis recommencez avec le double 11, puis le double 10, et ainsi de suite jusqu'au double blanc — soit 13 rondes au total. Le joueur ayant cumulé le score le plus bas à l'issue des 13 manches remporte la victoire.</p>
+  <p><strong>Partie plus rapide :</strong> Lors du premier tour, chaque joueur peut poser d'un coup toutes les tuiles jouables sur son train personnel. Après ce tour initial, le jeu reprend normalement.</p>
+{% endblock %}

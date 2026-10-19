@@ -1,0 +1,59 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}Skyjo{% endblock %}
+
+{% set game_link = url_for('skyjo.skyjo_game') %}
+
+{% block game_body %}
+
+  <p>
+    Skyjo est un jeu de cartes dans lequel chaque joueur possède un tableau de 12 cartes numérotées, disposées face cachée en 4 colonnes de 3. Le but est simple : terminer la partie avec le score total le plus bas possible, en se débarrassant des cartes à forte valeur et en révélant celles qui sont basses ou négatives.
+  </p>
+
+  <h3>Contenu de la boîte</h3>
+  <p>
+    La boîte contient 150 cartes numérotées de -2 à 12.
+  </p>
+
+  <h3>Mise en place</h3>
+  <p>
+    Distribuez <strong>12 cartes</strong> face cachée à chaque joueur. Chaque joueur les dispose devant lui en <strong>4 colonnes de 3 cartes</strong>. Retournez une carte de la pioche face visible au centre de la table : elle forme le début de la pile de défausse. Les cartes restantes constituent la pioche, posée face cachée à côté.
+  </p>
+  <p>
+    Chaque joueur retourne ensuite <strong>2 cartes de son choix</strong> dans son tableau, qui restent face visible pour le reste de la manche.
+  </p>
+  <p>
+    Le joueur dont la somme des 2 cartes révélées est la plus élevée commence la manche.
+  </p>
+
+  <h3>Déroulement d'une manche</h3>
+  <p>
+    À son tour, un joueur pioche soit la carte visible du dessus de la <strong>défausse</strong>, soit la carte du dessus de la <strong>pioche</strong> (sans la montrer aux autres) :
+  </p>
+  <ul>
+    <li><strong>Carte prise dans la défausse :</strong> le joueur doit l'échanger avec l'une des 12 cartes de son tableau (visible ou encore cachée). La carte remplacée est posée, face visible, sur la défausse.</li>
+    <li><strong>Carte prise dans la pioche :</strong> le joueur la regarde, puis choisit de la garder (il l'échange alors avec une carte de son tableau, comme ci-dessus) ou de la défausser directement. S'il la défausse sans l'avoir échangée, il doit alors retourner face visible l'une de ses cartes cachées.</li>
+  </ul>
+  <p>
+    <strong>Règle spéciale des colonnes identiques :</strong> si un joueur obtient 3 cartes de même valeur dans une même colonne (toutes visibles), il défausse immédiatement les 3 cartes de cette colonne. Lors d'un échange, on défausse d'abord la carte remplacée, puis, si la colonne est complète, les 3 cartes identiques. C'est le seul moyen de réduire le nombre de cartes de son tableau.
+  </p>
+
+  <h3>Fin d'une manche</h3>
+  <p>
+    Dès qu'un joueur a révélé toutes ses cartes, il termine son tour. Les autres joueurs jouent alors un dernier tour chacun, puis la manche s'arrête. Tous les joueurs encore concernés retournent leurs cartes restantes face visible.
+  </p>
+
+  <h3>Décompte des points</h3>
+  <p>
+    Chaque joueur additionne la valeur de ses 12 cartes (les cartes négatives réduisent le score). Ce total, positif ou négatif, s'ajoute au score cumulé des manches précédentes.
+  </p>
+  <p>
+    <strong>Règle du double :</strong> si le joueur ayant terminé la manche en premier n'obtient pas, à lui seul, le plus petit total de points de la manche, son score de cette manche est <strong>doublé</strong>. Attention, cette pénalité ne s'applique qu'aux totaux positifs.
+  </p>
+
+  <h3>Fin de partie</h3>
+  <p>
+    La partie se termine dès qu'un joueur atteint <strong>100 points ou plus</strong> à l'issue d'une manche. <strong>Le joueur ayant le score total le plus bas remporte la partie.</strong>
+  </p>
+
+{% endblock %}

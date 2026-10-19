@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════
+   skyjo.css — Identité visuelle Skyjo
+   Surcharges spécifiques au jeu, par-dessus base.css
+   ═══════════════════════════════════════════ */
+
+/* ── Watermark décoratif (comme oanami.css) ── */
+main::before {
+  content: 'SJ';
+  position: fixed;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(160px, 22vw, 300px);
+  font-weight: 300;
+  color: rgba(106, 154, 184, 0.05);
+  pointer-events: none;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  z-index: 0;
+}
+
+/* ── Largeur dynamique selon le nombre de joueurs ── */
+main { max-width: 900px; }
+main.players-3 { max-width: 1020px; }
+main.players-4 { max-width: 1140px; }
+main.players-5 { max-width: 1260px; }
+main.players-6 { max-width: 1380px; }
+main.players-7 { max-width: 1480px; }
+main.players-8 { max-width: 1580px; }
+
+/* ── Colonne "Manche" ── */
+.th-manche,
+.td-label {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--muted, #888);
+  text-align: left;
+}
+
+/* ── Ligne Total, épinglée en haut du corps du tableau ── */
+tr.total-row {
+  background: rgba(184, 154, 106, 0.08);
+  font-weight: 700;
+  border-bottom: 2px solid var(--line, #ddd);
+}
+
+tr.total-row td.td-label {
+  color: var(--gold, #b89a6a);
+  font-weight: 700;
+}
+
+td.td-total {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+}
+
+/* ── Lignes de manches ── */
+tr.round-row .score-input {
+  width: 100%;
+  max-width: 70px;
+  text-align: center;
+}
+
+/* Permet visuellement les valeurs négatives (cartes Skyjo de -2 à 12) */
+tr.round-row .score-input::-webkit-inner-spin-button,
+tr.round-row .score-input::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+/* ── Ligne "+ Ajouter une manche" ── */
+tr.add-round-row td {
+  text-align: center;
+  padding: 10px 0;
+  border-top: 1px dashed var(--line, #ddd);
+}
+
+.btn-add-round {
+  background: transparent;
+  border: 1px dashed var(--gold, #b89a6a);
+  color: var(--gold, #b89a6a);
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-add-round:hover {
+  background: var(--gold, #b89a6a);
+  color: #fff;
+}
+
+/* ── En-tête joueur : select + prénom/nom sur 2 lignes ── */
+.th-player .player-prenom {
+  display: block;
+  font-weight: 700;
+  text-align: center;
+}
+
+.th-player .player-nom {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted, #888);
+  margin-top: 2px;
+  text-align: center;
+}

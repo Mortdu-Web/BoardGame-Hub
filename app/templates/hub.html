@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Game Hub – Jeux de société{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('jeux.static', filename='css/hub.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <p class="section-tag">Ma ludothèque</p>
+  <h1 class="page-title">Jeux de société</h1>
+  <p class="page-lead">Choisissez un jeu pour lire sa présentation ou compter les points.</p>
+
+  <div class="filters">
+    <input type="search" id="search" placeholder="Rechercher un jeu…" aria-label="Rechercher un jeu">
+    <select id="players" aria-label="Nombre de joueurs">
+      <option value="">Tous les nombres de joueurs</option>
+      {% for n in range(1, max_players + 1) %}
+      <option value="{{ n }}">{{ n }} joueur{{ 's' if n > 1 }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="games-grid" id="games">
+    {% for g in games %}
+    <a class="game-card" href="{{ url_for(g.slug ~ '.page') }}"
+       data-title="{{ g.title|lower }}" data-min="{{ g.players_min }}" data-max="{{ g.players_max }}">
+      <div class="game-title">{{ g.title }}</div>
+      <p class="game-meta-line">{{ g.players }} joueurs · {{ g.duration }} min · {{ g.min_age }}+</p>
+      <p class="game-desc">{{ g.summary }}</p>
+      <span class="game-link">Voir la fiche</span>
+    </a>
+    {% else %}
+    <p>Aucun jeu trouvé. Ajoutez un dossier <code>app/games/&lt;slug&gt;/</code> avec un <code>card.json</code> et un <code>routes.py</code>.</p>
+    {% endfor %}
+  </div>
+
+  <p class="empty" id="empty" hidden>Aucun jeu ne correspond à ces filtres.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('jeux.static', filename='js/hub.js') }}" defer></script>
+{% endblock %}

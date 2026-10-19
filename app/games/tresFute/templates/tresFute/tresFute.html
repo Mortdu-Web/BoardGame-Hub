@@ -1,0 +1,84 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}Très Futé{% endblock %}
+
+{% set game_link = url_for('tresFute.tresFute_game') %}
+
+{% block game_body %}
+  <p>Très Futé est un jeu de dés pour 1 à 4 joueurs. Chacun dispose d'une feuille de jeu divisée en cinq zones colorées. À chaque tour, les dés sont lancés et les joueurs inscrivent ou cochent des valeurs dans leurs zones. Celui qui cumule le plus de points à l'issue de tous les tours remporte la partie.</p>
+
+  <h3>Préparatifs</h3>
+  <p>Chaque joueur reçoit une feuille de jeu et un crayon. Le joueur le plus malin prend les 6 dés et commence la partie en tant que joueur actif.</p>
+
+  <h3>Déroulement d'un tour</h3>
+  <p>La partie se joue en 4 tours (à 4 joueurs), 5 tours (à 3 joueurs) ou 6 tours (à 1 ou 2 joueurs). Au début de chaque tour, tous les joueurs rayent sur leur feuille le numéro du tour actuel et reçoivent l'action indiquée en dessous (tours 1 à 3), ou l'un des deux bonus au 4e tour.</p>
+  <p>Le <strong>joueur actif</strong> (celui qui a les dés devant lui) lance les 6 dés et choisit <strong>un dé</strong> qu'il pose sur l'une de ses trois cases « dé ». Il inscrit le résultat dans la zone de la couleur correspondante de sa feuille. Puis il pose sur le plateau d'argent tous les dés affichant un résultat <strong>inférieur</strong> à celui qu'il vient de choisir. Les dés sur le plateau d'argent ne peuvent plus être utilisés par le joueur actif (sauf via l'action « dé supplémentaire »).</p>
+  <p>Le joueur actif effectue ensuite un <strong>deuxième lancer</strong> avec les dés restants, choisit à nouveau un dé, l'inscrit, et pose à nouveau sur le plateau d'argent tous les dés inférieurs. Puis il effectue un <strong>troisième et dernier lancer</strong> et exécute une dernière fois ces actions. Tous les dés restants non inscrits sont posés sur le plateau d'argent.</p>
+  <p><strong>Attention :</strong> si le joueur actif choisit trop tôt un dé à résultat élevé, il peut se retrouver sans dé pour les lancers suivants. Il peut alors effectuer moins de 3 lancers.</p>
+  <p>Le <strong>dé blanc</strong> est un joker de couleur : il peut être utilisé comme dé jaune, vert, orange ou violet. Ou il peut être combiné avec le dé bleu pour inscrire la somme des deux dans la zone bleue.</p>
+
+  <h3>Les joueurs passifs</h3>
+  <p>Une fois que le joueur actif a posé 3 dés sur sa feuille ou qu'il ne peut plus lancer, les autres joueurs deviennent <strong>joueurs passifs</strong>. Ils voient les dés mis de côté sur le plateau d'argent et chacun choisit <strong>un dé simultanément</strong> pour l'inscrire sur sa feuille dans la zone de couleur correspondante. Les dés restent sur le plateau d'argent — plusieurs joueurs passifs peuvent choisir le même dé. Une fois tous les passifs servis, le joueur à gauche du joueur actif devient le nouveau joueur actif.</p>
+  <p><strong>Cas particulier :</strong> si un joueur passif n'a pas la possibilité d'utiliser un dé du plateau d'argent, il peut utiliser un dé des cases « dé » du joueur actif. Il n'est pas possible de renoncer volontairement à un dé du plateau pour utiliser celui du joueur actif.</p>
+
+  <h3>La feuille de jeu</h3>
+  <p>La feuille comporte cinq zones colorées. Dans les zones <strong>verte, orange et violette</strong>, une flèche indique qu'il faut remplir les cases de gauche à droite, sans en sauter. Dans les zones <strong>jaune et bleue</strong> (sans flèche), les cases peuvent être remplies dans n'importe quel ordre.</p>
+
+  <h3>Le dé jaune</h3>
+  <p>Le résultat du dé jaune est coché dans la <strong>zone jaune</strong>. Chaque nombre y apparaît deux fois mais un seul des deux peut être coché par dé. Les cases peuvent être cochées dans n'importe quel ordre. Dès qu'une colonne est entièrement cochée, le joueur entoure le nombre en noir dans l'étoile en dessous : ce sont ses points pour cette colonne.</p>
+  <p><strong>Points en fin de partie :</strong> on additionne tous les nombres entourés.</p>
+
+  <h3>Le dé bleu</h3>
+  <p>En choisissant le dé bleu, le joueur <strong>additionne</strong> le résultat du dé bleu à celui du dé blanc (où qu'il se trouve). Si c'est le dé blanc qui est choisi pour la zone bleue, on additionne également les deux dés. Les cases peuvent être cochées dans n'importe quel ordre.</p>
+  <p><strong>Points en fin de partie :</strong> la grille en haut de la zone bleue indique le nombre de points obtenus selon le nombre de croix effectuées.</p>
+
+  <h3>Le dé vert</h3>
+  <p>Le résultat du dé vert doit être inscrit dans la <strong>zone verte</strong> en commençant à gauche, de gauche à droite sans sauter de case. Le nombre affiché doit toujours être <strong>supérieur ou égal</strong> à celui indiqué dans la case. Si le résultat est inférieur, ce dé ne peut pas être choisi.</p>
+  <p><strong>Points en fin de partie :</strong> le nombre blanc dans l'étoile au-dessus de la dernière croix cochée indique le nombre de points obtenus.</p>
+
+  <h3>Le dé orange</h3>
+  <p>Le nombre indiqué par le dé orange est inscrit dans la <strong>zone orange</strong>, de gauche à droite sans sauter de case. Il n'y a aucune contrainte sur le nombre inscrit. Quatre cases bonus (×2 et ×3) permettent de multiplier le résultat du dé par le facteur indiqué.</p>
+  <p><strong>Points en fin de partie :</strong> on additionne tous les nombres inscrits.</p>
+
+  <h3>Le dé violet</h3>
+  <p>Le nombre indiqué par le dé violet est inscrit dans la <strong>zone violette</strong>, de gauche à droite sans sauter de case. Chaque nombre inscrit doit être <strong>supérieur</strong> à celui de la case précédente. Exception : après un 6, on peut inscrire n'importe quel nombre.</p>
+  <p><strong>Points en fin de partie :</strong> on additionne tous les nombres inscrits.</p>
+
+  <h3>Les bonus</h3>
+  <p>Des bonus sont activés dès qu'un nombre est inscrit ou coché dans une case marquée d'un symbole bonus, ou en complétant une ligne ou colonne entière. Le bonus doit être utilisé <strong>immédiatement</strong>, il ne peut pas être gardé pour plus tard. Plusieurs bonus peuvent se déclencher en chaîne.</p>
+  <ul>
+    <li><strong>Bonus X</strong> : cocher immédiatement une case dans la zone bleue ou jaune, ou la case suivante dans la zone verte.</li>
+    <li><strong>Bonus chiffre (fond violet ou orange)</strong> : noter ce nombre dans la prochaine case vide de la zone indiquée.</li>
+    <li><strong>Bonus X noir (4e tour)</strong> : libre choix de la couleur (jaune, bleu ou vert).</li>
+    <li><strong>Bonus 6 noir (4e tour)</strong> : libre choix de la couleur (violet ou orange).</li>
+  </ul>
+
+  <h3>Les renards</h3>
+  <p>Les renards sont gagnés comme des bonus, en inscrivant un nombre ou une croix dans la case correspondante ou en complétant des lignes. <strong>Chaque renard rapporte autant de points que la zone de couleur affichant le total de points le plus bas du joueur.</strong></p>
+  <p><strong>Attention :</strong> si un joueur n'obtient aucun point dans une zone, les renards valent tous 0 point.</p>
+
+  <h3>Les actions</h3>
+  <p>Chaque feuille comporte deux barres d'actions dont les cases se débloquent au cours de la partie (en inscrivant un nombre ou en cochant une case). Une action débloquée peut être utilisée immédiatement, au même tour ou lors d'un tour ultérieur — en rayant la case correspondante.</p>
+  <ul>
+    <li><strong>Action « relance des dés »</strong> : réservée au joueur actif uniquement. Permet de relancer tous les dés disponibles (pas ceux sur le plateau d'argent ni sur les cases « dé »). Tous les dés disponibles doivent être relancés.</li>
+    <li><strong>Action « dé supplémentaire »</strong> : utilisable uniquement à la fin du tour du joueur (actif ou passif). Permet de choisir l'un des 6 dés, même un dé déjà utilisé par le joueur actif ou par le joueur lui-même. Un joueur peut utiliser plusieurs actions « dé supplémentaire » par tour, mais ne peut choisir chaque dé qu'une seule fois.</li>
+  </ul>
+
+  <h3>Fin de la partie</h3>
+  <p>La partie se termine à l'issue du dernier tour du dernier joueur actif a fini de jouer et que les joueurs passifs ont noté leur dé. Chaque joueur peut encore utiliser ses éventuelles actions « dé supplémentaire » restantes. Les actions « relance des dés » restantes ne servent plus à rien.</p>
+  <p>Un joueur désigné note pour tous les joueurs les points de chaque zone colorée au dos de sa feuille, puis multiplie le nombre de renards par les points de la zone affichant le total le plus bas. En cas d'égalité, le joueur avec le total le plus élevé dans une zone remporte la victoire. S'il y a toujours égalité, il y a plusieurs vainqueurs.</p>
+
+  <h3>Partie en solo</h3>
+  <p>Le joueur effectue 6 tours en alternant rôle actif et rôle passif. En tant que joueur passif, il lance les 6 dés et pose sur le plateau d'argent les <strong>3 dés présentant le résultat le plus faible</strong>. Il ne peut pas utiliser l'action « relance des dés » en mode passif. Le score obtenu peut être comparé au tableau suivant :</p>
+  <ul>
+    <li><strong>&gt; 280 points</strong> — Super malin !</li>
+    <li><strong>260–280</strong> — Tu ne t'appellerais pas Albert Einstein, par hasard ?</li>
+    <li><strong>240–260</strong> — Quel génie !</li>
+    <li><strong>220–239</strong> — Impressionnant !</li>
+    <li><strong>200–219</strong> — Je te tire mon chapeau !</li>
+    <li><strong>180–199</strong> — Très bon résultat !</li>
+    <li><strong>160–179</strong> — C'est déjà bien.</li>
+    <li><strong>140–159</strong> — Pas mal, mais tu feras mieux la prochaine fois.</li>
+    <li><strong>&lt; 140</strong> — Bon espoir d'amélioration !</li>
+  </ul>
+{% endblock %}

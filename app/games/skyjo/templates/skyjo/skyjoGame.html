@@ -1,0 +1,19 @@
+{% extends "jeux/baseScore.html" %}
+
+{% block title %}Skyjo — Tableau des scores{% endblock %}
+
+{% block score_styles %}
+  <link rel="stylesheet" href="{{ url_for('skyjo.static', filename='css/skyjo.css') }}"/>
+{% endblock %}
+
+{% block score_title %}Skyjo — Tableau des scores{% endblock %}
+{% block score_subtitle %}Sélectionnez les joueurs, ajoutez une manche à chaque tour et suivez le score total{% endblock %}
+
+{% block submit_url %}{{ url_for('skyjo.skyjo_submit') }}{% endblock %}
+
+{% block game_script %}
+  <script>
+    const NEW_PLAYER_URL = "{{ url_for('jeux.nouveau_joueur') }}";
+  </script>
+  <script type="module" src="{{ url_for('skyjo.static', filename='js/skyjo.js') }}"></script>
+{% endblock %}

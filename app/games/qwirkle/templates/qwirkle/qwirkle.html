@@ -1,0 +1,219 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}Qwirkle{% endblock %}
+
+
+{% block jeux_styles %}
+  <link rel="stylesheet" href="{{ url_for('qwirkle.static', filename='css/qwirkle.css') }}"/>
+{% endblock %}
+
+{% block game_body %}
+<div class="qw">
+
+  <!-- INTRO -->
+  <div class="qw-intro">
+    <div class="qw-intro-tiles">
+      <div class="qw-tile" style="background:var(--qw-red);">●</div>
+      <div class="qw-tile" style="background:var(--qw-orange);">■</div>
+      <div class="qw-tile" style="background:var(--qw-yellow);color:#333;">★</div>
+      <div class="qw-tile" style="background:var(--qw-green);">◆</div>
+      <div class="qw-tile" style="background:var(--qw-blue);">✦</div>
+      <div class="qw-tile" style="background:var(--qw-purple);">✚</div>
+    </div>
+    <p>Qwirkle est un jeu de tuiles à <b>6 formes</b> et <b>6 couleurs</b>. Construisez des lignes en associant des tuiles de même couleur ou de même forme, et marquez un maximum de points — dont le fameux <b>Qwirkle</b>, une ligne complète de 6 tuiles !</p>
+  </div>
+
+  <!-- PRÉPARATION -->
+  <div class="qw-section">
+    <div class="qw-section-title">⚙️ Préparation</div>
+    <ol class="qw-steps">
+      <li>Préparez <b>1 feuille de score et 1 crayon</b> par partie.</li>
+      <li>Placez <b>toutes les tuiles dans le sac</b>.</li>
+      <li>Chaque joueur pioche au hasard <b>6 tuiles</b> dans le sac et les place devant lui, cachées des autres. Ces tuiles forment sa <b>main</b>.</li>
+      <li>Les tuiles restantes forment la <b>réserve</b> et restent dans le sac.</li>
+      <li><b>Détermination du premier joueur :</b> chaque joueur annonce le nombre le plus élevé de tuiles partageant une même caractéristique (couleur <em>ou</em> forme) dans sa main — les doublons ne comptent pas. Celui qui annonce le plus grand nombre commence. <em>En cas d'égalité, le plus âgé commence.</em></li>
+      <li>Le premier joueur pose ces tuiles sur la table et note ses points, puis pioche pour retrouver 6 tuiles en main. Le jeu se poursuit dans le sens des aiguilles d'une montre.</li>
+    </ol>
+  </div>
+
+  <!-- DÉROULEMENT -->
+  <div class="qw-section">
+    <div class="qw-section-title orange">🔄 Déroulement du tour</div>
+    <p style="font-size:.92rem;margin-bottom:14px;color:#333;">À son tour, chaque joueur effectue <b>l'une de ces deux actions</b> :</p>
+
+    <div class="qw-rule orange">
+      <b>Action 1 — Compléter une ligne</b><br>
+      Ajoutez 1 tuile ou plus aux lignes existantes, puis piochez dans la réserve pour retrouver 6 tuiles en main.<br>
+      • Toutes les tuiles jouées en un même tour doivent <b>appartenir à la même ligne</b> (elles peuvent ne pas se toucher).<br>
+      • Elles doivent toutes partager la même caractéristique : <b>couleur</b> ou <b>forme</b>.<br>
+      • Chaque tuile posée doit être <b>reliée</b> aux lignes existantes.
+    </div>
+
+    <div class="qw-rule green">
+      <b>Action 2 — Échanger des tuiles</b><br>
+      Mettez de côté les tuiles à échanger (tout ou partie de votre main), tirez le même nombre de tuiles dans la réserve, puis mélangez les tuiles échangées dans la réserve.<br>
+      <span class="hl-r">Vous passez votre tour sans poser de tuile.</span><br>
+      Si vous ne pouvez pas ajouter de tuile à une ligne, vous <b>devez</b> échanger.
+    </div>
+  </div>
+
+  <!-- RÈGLES DE LIGNE -->
+  <div class="qw-section">
+    <div class="qw-section-title green">📏 Règles des lignes</div>
+
+    <div class="qw-rule">
+      <b>Connexion obligatoire :</b> impossible de jouer des tuiles qui ne seraient pas reliées aux lignes déjà présentes sur la table.
+    </div>
+    <div class="qw-rule">
+      <b>Cohérence de ligne :</b> les tuiles que vous ajoutez à une ligne doivent partager la <b>même caractéristique</b> que les tuiles déjà présentes dans cette ligne (toutes de même couleur, ou toutes de même forme).
+    </div>
+    <div class="qw-rule red">
+      <b>Règle de la tuile unique :</b> <span class="hl-r">jamais deux tuiles identiques dans une même ligne.</span><br>
+      Il en découle qu'une ligne contient au maximum <b>6 tuiles</b>.
+    </div>
+    <div class="qw-rule">
+      <b>Règle de la ligne unique :</b> toutes les tuiles jouées en un tour doivent appartenir à la <b>même ligne</b>, même si elles ne se touchent pas.
+    </div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="qw-section">
+    <div class="qw-section-title purple">🏆 Calcul des points</div>
+
+    <div class="qw-score-grid">
+      <div class="qw-score-block blue">
+        <strong>Points de ligne</strong>
+        Marquez <b>1 point par tuile</b> dans chaque ligne que vous complétez ou créez — y compris les tuiles déjà posées avant votre tour.
+      </div>
+      <div class="qw-score-block orange">
+        <strong>Tuile au croisement</strong>
+        Une tuile posée à l'intersection de deux lignes rapporte <b>1 point dans chaque ligne</b>, soit <b>2 points</b> pour cette seule tuile.
+      </div>
+      <div class="qw-score-block green">
+        <strong>Fin de partie (First)</strong>
+        Le joueur qui pose sa dernière tuile remporte <b>6 points supplémentaires</b>. Ce bonus n'est pas attribué si la partie s'arrête faute de tuiles jouables.
+      </div>
+      <div class="qw-score-block purple">
+        <strong>Ligne de 6 interdite ?</strong>
+        Non — une ligne de 6 tuiles est le <b>Qwirkle</b> (voir ci-dessous). Au-delà de 6 tuiles, une ligne serait invalide (doublon obligatoire).
+      </div>
+    </div>
+
+    <div class="qw-qwirkle">
+      <div class="big">QWIRKLE !</div>
+      Complétez une ligne de <b>6 tuiles</b> (même couleur, formes toutes différentes — ou même forme, couleurs toutes différentes) et remportez <b>6 points bonus</b> en plus des 6 points de la ligne : soit <b>12 points</b> au total pour ce coup !
+      <div class="qw-tile-strip" style="margin-top:12px;">
+        <div class="qw-tile-sm" style="background:var(--qw-red);">●</div>
+        <div class="qw-tile-sm" style="background:var(--qw-red);">■</div>
+        <div class="qw-tile-sm" style="background:var(--qw-red);">★</div>
+        <div class="qw-tile-sm" style="background:var(--qw-red);">◆</div>
+        <div class="qw-tile-sm" style="background:var(--qw-red);">✦</div>
+        <div class="qw-tile-sm" style="background:var(--qw-red);">✚</div>
+        <span style="margin-left:8px;font-size:.9rem;opacity:.85;">= 6 pts ligne + 6 pts bonus</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIN DE PARTIE -->
+  <div class="qw-section">
+    <div class="qw-section-title red">🏁 Fin de la partie</div>
+
+    <div class="qw-rule">
+      Quand la réserve est vide, les joueurs continuent à jouer normalement mais <b>ne piochent plus</b> à la fin de leur tour.
+    </div>
+    <div class="qw-rule">
+      La partie se termine quand un joueur pose sa <b>dernière tuile</b> : il remporte <b>6 points bonus</b>.
+    </div>
+    <div class="qw-rule red">
+      Si la réserve est vide <em>et</em> qu'aucun joueur ne peut poser de tuile, le jeu s'arrête immédiatement — <span class="hl-r">sans attribution du bonus de 6 points.</span>
+    </div>
+    <div class="qw-rule green">
+      Le joueur ayant le <b>plus grand nombre de points</b> remporte la partie.
+    </div>
+  </div>
+
+  <!-- EXEMPLE DE PARTIE -->
+  <div class="qw-section">
+    <div class="qw-section-title dark">🎲 Exemple de partie commentée</div>
+
+    <table class="qw-examples">
+      <thead>
+        <tr><th>Joueur</th><th>Action</th><th>Points</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Cassandre</b> (Fig. A)</td>
+          <td>Pose 3 tuiles rouges de formes différentes pour commencer la partie.</td>
+          <td class="pts">3 pts</td>
+        </tr>
+        <tr>
+          <td><b>Jérôme</b> (Fig. B)</td>
+          <td>Joue 3 carrés. Prolonge la ligne rouge et crée une ligne de carrés. Le carré rouge vaut 2 pts (appartient aux deux lignes).</td>
+          <td class="pts">7 pts (4+3)</td>
+        </tr>
+        <tr>
+          <td><b>Coline</b> (Fig. C)</td>
+          <td>Pose un cercle bleu — crée une ligne de cercles et une ligne bleue.</td>
+          <td class="pts">4 pts (2+2)</td>
+        </tr>
+        <tr>
+          <td><b>JC</b> (Fig. D)</td>
+          <td>Pose 2 tuiles vertes, créant 3 nouvelles lignes.</td>
+          <td class="pts">6 pts (2+2+2)</td>
+        </tr>
+        <tr>
+          <td><b>Cassandre</b> (Fig. E)</td>
+          <td>Pose 2 tuiles vertes dans la ligne verte existante (elles ne se touchent pas, mais appartiennent bien à la même ligne).</td>
+          <td class="pts">7 pts (4+3)</td>
+        </tr>
+        <tr>
+          <td><b>Jérôme</b> (Fig. F)</td>
+          <td>Pose 2 carrés dans deux lignes distinctes — impossible de les mettre dans la même ligne (doublon de carrés rouges interdit).</td>
+          <td class="pts">6 pts (4+2)</td>
+        </tr>
+        <tr>
+          <td><b>Coline</b> (Fig. G)</td>
+          <td>Pose 2 étoiles — crée une ligne d'étoiles.</td>
+          <td class="pts">3 pts</td>
+        </tr>
+        <tr>
+          <td><b>JC</b> (Fig. H)</td>
+          <td>Pose 2 tuiles oranges — crée une ligne orange.</td>
+          <td class="pts">3 pts</td>
+        </tr>
+        <tr>
+          <td><b>Cassandre</b> (Fig. I)</td>
+          <td>Pose 2 tuiles jaunes — crée une ligne jaune et complète une ligne de losanges et une ligne de cercles.</td>
+          <td class="pts">10 pts (4+4+2)</td>
+        </tr>
+        <tr>
+          <td><b>Jérôme</b> (Fig. J)</td>
+          <td>Pose une étoile rouge — s'insère dans la ligne d'étoiles et dans la ligne rouge.</td>
+          <td class="pts">9 pts (4+5)</td>
+        </tr>
+        <tr>
+          <td><b>Coline</b> (Fig. K)</td>
+          <td>Pose 3 croix — complète la ligne bleue, termine la ligne rouge (6ème forme rouge = <b>Qwirkle !</b>).</td>
+          <td class="pts">18 pts (6+3+3+6 bonus)</td>
+        </tr>
+        <tr>
+          <td><b>JC</b> (Fig. L)</td>
+          <td>Pose 2 carrés — s'ajoute à une ligne de carrés et commence deux nouvelles lignes de carrés.</td>
+          <td class="pts">9 pts (5+2+2)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ASTUCES -->
+  <div class="qw-section">
+    <div class="qw-section-title orange">💡 Astuces stratégiques</div>
+    <ul class="qw-tips">
+      <li><b>Comptez les tuiles :</b> il y a 3 exemplaires de chaque tuile dans le jeu. Si vous attendez un cercle jaune, vérifiez qu'ils n'ont pas tous déjà été joués.</li>
+      <li><b>Jouez sur plusieurs lignes :</b> placez vos tuiles à des intersections pour marquer des points dans plusieurs lignes simultanément.</li>
+      <li><b>Évitez les lignes de 5 :</b> vous offririez à l'adversaire l'opportunité de réaliser un Qwirkle à 12 points sur votre dos.</li>
+    </ul>
+  </div>
+
+</div>
+{% endblock %}

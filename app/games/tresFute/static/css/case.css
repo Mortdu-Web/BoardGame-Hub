@@ -1,0 +1,86 @@
+/* ── Composant <jeu-case> ──────────────────────────── */
+
+.case {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3rem;
+  height: 3rem;
+  max-width: 100%;
+  border: 2px solid #333;
+  box-sizing: border-box;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* ── Contenu (texte, image, input) ───────────────── */
+.case__contenu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 1rem;
+  z-index: 1; /* passe au-dessus des SVG */
+}
+
+/* ── SVG partagé (cercle + croix) ────────────────── */
+.case__cercle,
+.case__croix {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* Cercle */
+.case__cercle ellipse {
+  fill: none;
+  stroke: #1565c0;   /* couleur du cercle */
+  stroke-width: 7;
+}
+
+/* Croix */
+.case__croix line {
+  stroke: #e53935;   /* couleur de la croix */
+  stroke-width: 8;
+}
+
+/* ── États ───────────────────────────────────────── */
+
+/* case--entouree : montre le cercle */
+.case--entouree .case__cercle {
+  opacity: 1;
+}
+
+/* case--cochee : montre la croix */
+.case--cochee .case__croix {
+  opacity: 1;
+}
+
+/* ── Input pour "modifiable" ─────────────────────── */
+.case__input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  text-align: center;
+  font-size: 1rem;
+  font-family: inherit;
+  color: inherit;
+  padding: 0;
+
+  /* Masque les flèches natives du champ number */
+  -moz-appearance: textfield;
+}
+.case__input::-webkit-outer-spin-button,
+.case__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

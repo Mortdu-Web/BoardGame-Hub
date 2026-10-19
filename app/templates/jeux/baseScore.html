@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('jeux.static', filename='css/base.css') }}"/>
+  {% block score_styles %}{% endblock %}
+{% endblock %}
+
+{% block head_scripts %}
+  <script>
+    const PLAYERS_URL = "{{ url_for('jeux.players') }}";
+  </script>
+{% endblock %}
+
+{% block content %}
+<main>
+
+  <!-- ── En-tête de page ── -->
+  <div class="page-header">
+    <h1>{% block score_title %}Tableau des scores{% endblock %}</h1>
+    <p>{% block score_subtitle %}Saisissez les scores par joueur{% endblock %}</p>
+  </div>
+
+  <!-- ── Barre de contrôles ── -->
+  <div class="controls-bar">
+    <div class="control-group">
+      <label for="nb-joueurs">Joueurs</label>
+      <select id="nb-joueurs">
+        <option value="2">2 joueurs</option>
+        <option value="3">3 joueurs</option>
+        <option value="4">4 joueurs</option>
+        <option value="5">5 joueurs</option>
+        <option value="6">6 joueurs</option>
+        <option value="7">7 joueurs</option>
+        <option value="8">8 joueurs</option>
+      </select>
+      <span id="nb-label">2 colonnes joueurs actives</span>
+    </div>
+
+    {% block extra_controls %}{% endblock %}
+  </div>
+
+  <!-- ── Tableau des scores ── -->
+  <div class="table-wrapper">
+    <table id="score-table">
+      <thead>
+        <tr id="thead-row">
+          <th>Saison</th>
+          <th>Type</th>
+          <!-- Les colonnes joueurs sont injectées dynamiquement via JS -->
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <!-- Les lignes sont injectées dynamiquement via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Envoi ── -->
+  <div class="submit-section">
+    <button class="btn-send" id="btn-envoyer" type="button">
+      Envoyer au serveur
+    </button>
+  </div>
+
+  <!-- ── Feedback flash ── -->
+  <div id="flash" class="flash-msg" role="status" aria-live="polite"></div>
+
+</main>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const SUBMIT_URL = "{% block submit_url %}{% endblock %}";
+  </script>
+  {% block game_script %}{% endblock %}
+{% endblock %}

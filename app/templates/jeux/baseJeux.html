@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('jeux.static', filename='css/jeux.css') }}"/>
+  {% block jeux_styles %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+  <div class="game-detail">
+    <a class="back-btn" href="{{ url_for('jeux.hub') }}">Retour aux jeux</a>
+    <h2>{{ game.title }}</h2>
+    <div class="game-meta">
+      <strong>{{ game.players }} joueurs</strong>
+      <div class="project-meta-divider"></div>
+      <strong>{{ game.duration }} min</strong>
+      <div class="project-meta-divider"></div>
+      <strong>âge : {{ game.min_age }}+</strong>
+    </div>
+
+    {# game_link est défini par la page du jeu s'il propose un compteur de points #}
+    {% if game_link %}
+    <a class="game-link" href="{{ game_link }}">Compter les points</a>
+    {% endif %}
+    <div class="divider"></div>
+
+    <div class="game-body">
+      {% block game_body %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,104 @@
+/* ── Smile Life palette ── */
+:root {
+    --sl-blue:    #00b4e6;
+    --sl-pink:    #e8008a;
+    --sl-green:   #3db54a;
+    --sl-purple:  #7b3fa0;
+    --sl-red:     #e8312a;
+    --sl-yellow:  #f7d000;
+    --sl-dark:    #1a1a2e;
+    --sl-light:   #f5faff;
+}
+
+/* ── layout ── */
+.sl-rules { font-family: 'Nunito', 'Segoe UI', sans-serif; color: var(--sl-dark); max-width: 860px; margin: 0 auto; }
+
+/* ── intro ── */
+.sl-intro { background: linear-gradient(135deg, var(--sl-blue) 0%, #005fa3 100%); color: #fff; border-radius: 16px; padding: 28px 32px; margin-bottom: 32px; }
+.sl-intro p { margin: 0; font-size: 1.05rem; line-height: 1.7; }
+
+/* ── section headers ── */
+.sl-section { margin-bottom: 36px; }
+.sl-section-title {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 1.15rem; font-weight: 800; letter-spacing: .04em;
+    text-transform: uppercase; color: #fff;
+    background: var(--sl-blue); border-radius: 10px;
+    padding: 10px 20px; margin-bottom: 16px;
+}
+.sl-section-title.pink   { background: var(--sl-pink); }
+.sl-section-title.green  { background: var(--sl-green); }
+.sl-section-title.purple { background: var(--sl-purple); }
+.sl-section-title.red    { background: var(--sl-red); }
+.sl-section-title.dark   { background: var(--sl-dark); }
+
+/* ── card types grid ── */
+.sl-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px; }
+.sl-card-type {
+    border-radius: 12px; padding: 16px 18px; border-left: 5px solid;
+    background: var(--sl-light);
+}
+.sl-card-type.blue   { border-color: var(--sl-blue); }
+.sl-card-type.pink   { border-color: var(--sl-pink); }
+.sl-card-type.green  { border-color: var(--sl-green); }
+.sl-card-type.purple { border-color: var(--sl-purple); }
+.sl-card-type.red    { border-color: var(--sl-red); }
+.sl-card-type strong { display: block; font-size: .9rem; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 6px; }
+.sl-card-type.blue   strong { color: var(--sl-blue); }
+.sl-card-type.pink   strong { color: var(--sl-pink); }
+.sl-card-type.green  strong { color: var(--sl-green); }
+.sl-card-type.purple strong { color: var(--sl-purple); }
+.sl-card-type.red    strong { color: var(--sl-red); }
+.sl-card-type p { margin: 0; font-size: .88rem; line-height: 1.55; color: #444; }
+
+/* ── general text ── */
+.sl-text { font-size: .93rem; line-height: 1.75; color: #333; margin-bottom: 12px; }
+.sl-text b { color: var(--sl-dark); }
+
+/* ── highlighted rule boxes ── */
+.sl-rule-box {
+    background: #fff; border-radius: 10px; border-left: 4px solid var(--sl-blue);
+    padding: 12px 18px; margin-bottom: 12px;
+    font-size: .9rem; line-height: 1.65; color: #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.sl-rule-box.pink   { border-color: var(--sl-pink); }
+.sl-rule-box.green  { border-color: var(--sl-green); }
+.sl-rule-box.red    { border-color: var(--sl-red); }
+.sl-rule-box.yellow { border-color: var(--sl-yellow); background: #fffde7; }
+
+.sl-rule-box b { color: var(--sl-dark); }
+.sl-rule-box .hl-pink   { color: var(--sl-pink);   font-weight: 700; }
+.sl-rule-box .hl-blue   { color: var(--sl-blue);   font-weight: 700; }
+.sl-rule-box .hl-green  { color: var(--sl-green);  font-weight: 700; }
+.sl-rule-box .hl-red    { color: var(--sl-red);    font-weight: 700; }
+
+/* ── turn memo ── */
+.sl-memo { background: var(--sl-blue); color: #fff; border-radius: 14px; padding: 24px 28px; }
+.sl-memo h4 { margin: 0 0 14px; font-size: 1rem; text-transform: uppercase; letter-spacing: .06em; }
+.sl-memo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.sl-memo-block { background: rgba(255,255,255,.15); border-radius: 10px; padding: 14px 16px; font-size: .87rem; line-height: 1.6; }
+.sl-memo-block.pink   { background: rgba(232,0,138,.25); }
+.sl-memo-block.green  { background: rgba(61,181,74,.25); }
+.sl-memo-block.purple { background: rgba(123,63,160,.25); }
+.sl-memo-block b { display: block; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 6px; opacity: .85; }
+
+/* ── pros list ── */
+.sl-pros-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sl-pros-list li { font-size: .87rem; padding: 8px 12px; border-radius: 8px; background: var(--sl-light); border-left: 3px solid var(--sl-blue); line-height: 1.5; }
+.sl-pros-list li b { color: var(--sl-blue); }
+
+/* ── salary scale ── */
+.sl-salary-scale { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.sl-salary-level { display: flex; align-items: center; gap: 8px; background: var(--sl-light); border-radius: 8px; padding: 8px 14px; font-size: .88rem; }
+.sl-salary-level .bills { font-size: 1.2rem; }
+
+/* ── tip bubble ── */
+.sl-tip { background: #e3f7fd; border-radius: 12px; padding: 12px 18px; font-size: .88rem; color: #005fa3; line-height: 1.6; margin-bottom: 12px; }
+.sl-tip::before { content: "💬 "; }
+
+@media (max-width: 600px) {
+    .sl-memo-row { grid-template-columns: 1fr; }
+    .sl-pros-list { grid-template-columns: 1fr; }
+    .sl-cards-grid { grid-template-columns: 1fr 1fr; }
+}

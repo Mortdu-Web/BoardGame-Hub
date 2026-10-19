@@ -1,0 +1,207 @@
+/* ═══════════════════════════════════════════
+   dice.css  –  styles pour <jeu-dice>
+   ═══════════════════════════════════════════ */
+
+/* ── Variables & Reset ─────────────────────── */
+jeu-dice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+/* ── Coque du dé ───────────────────────────── */
+.dice-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease;
+}
+
+.dice-shell:hover  { transform: scale(1.08) translateY(-2px); }
+.dice-shell:active { transform: scale(0.96); }
+.dice-shell:focus-visible { outline: 3px dashed currentColor; outline-offset: 6px; }
+
+/* ── Face centrale ─────────────────────────── */
+.dice-face {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  border: 3px solid rgba(255 255 255 / .25);
+  box-shadow:
+    inset 0 2px 6px rgba(255 255 255 / .30),
+    inset 0 -3px 8px rgba(0 0 0 / .30),
+    0 8px 20px rgba(0 0 0 / .35);
+  background: var(--dice-bg, #222);
+  color: var(--dice-fg, #fff);
+  transition: background 0.2s;
+}
+
+/* Label (D6, D20…) */
+.dice-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  line-height: 1;
+}
+
+/* Valeur affichée */
+.dice-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 2ch;
+  text-align: center;
+  transition: opacity 0.1s;
+}
+
+/* ── Ombre portée ──────────────────────────── */
+.dice-shadow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65%;
+  height: 10px;
+  background: radial-gradient(ellipse, rgba(0 0 0 / .45) 0%, transparent 75%);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+/* ── Couleurs ──────────────────────────────── */
+.dice-shell[data-color="red"]    { --dice-bg: #c0392b; --dice-fg: #fff; }
+.dice-shell[data-color="orange"]   { --dice-bg: #c05010; --dice-fg: #fff; }
+.dice-shell[data-color="blue"]   { --dice-bg: #2471a3; --dice-fg: #fff; }
+.dice-shell[data-color="green"]  { --dice-bg: #1e8449; --dice-fg: #fff; }
+.dice-shell[data-color="black"]  { --dice-bg: #1a1a1a; --dice-fg: #f0f0f0; }
+.dice-shell[data-color="white"]  { --dice-bg: #f5f5f0; --dice-fg: #222;   border: 2px solid #ccc; }
+.dice-shell[data-color="gold"]   { --dice-bg: #b7950b; --dice-fg: #fff2a0; }
+.dice-shell[data-color="purple"] { --dice-bg: #6c3483; --dice-fg: #e8d5f5; }
+
+/* ── Formes par taille ─────────────────────── */
+
+/* D4 – triangle → losange prononcé */
+.dice-shell[data-size="4"] .dice-face {
+  border-radius: 6px 6px 6px 6px;
+  clip-path: polygon(50% 4%, 96% 96%, 4% 96%);
+  width: 86px;
+  height: 86px;
+}
+.dice-shell[data-size="4"] .dice-value { margin-top: 24px; font-size: 1.6rem; }
+.dice-shell[data-size="4"] .dice-label { margin-top: 20px; }
+
+/* D6 – carré arrondi (défaut) */
+/* .dice-shell[data-size="6"] → déjà le style de base */
+
+/* D8 – octogone */
+.dice-shell[data-size="8"] .dice-face {
+  border-radius: 0;
+  clip-path: polygon(30% 4%, 70% 4%, 96% 30%, 96% 70%, 70% 96%, 30% 96%, 4% 70%, 4% 30%);
+}
+
+/* D10 – pentagone allongé */
+.dice-shell[data-size="10"] .dice-face {
+  border-radius: 0;
+  clip-path: polygon(50% 2%, 98% 36%, 82% 96%, 18% 96%, 2% 36%);
+  height: 88px;
+}
+
+/* D12 – dodécagone */
+.dice-shell[data-size="12"] .dice-face {
+  border-radius: 0;
+  clip-path: polygon(
+    50% 2%,  74% 10%, 92% 30%,
+    98% 56%, 84% 80%, 62% 96%,
+    38% 96%, 16% 80%,  2% 56%,
+     8% 30%, 26% 10%
+  );
+  width: 88px;
+  height: 88px;
+}
+
+/* D20 – icosaèdre stylisé (triangle arrondi) */
+.dice-shell[data-size="20"] .dice-face {
+  border-radius: 0;
+  clip-path: polygon(50% 2%, 98% 88%, 2% 88%);
+  width: 90px;
+  height: 90px;
+  box-shadow: 0 8px 20px rgba(0 0 0 / .4);
+}
+.dice-shell[data-size="20"] .dice-value { margin-top: 28px; font-size: 1.55rem; }
+.dice-shell[data-size="20"] .dice-label { margin-top: 22px; }
+
+/* ── Animation : lancer ────────────────────── */
+@keyframes diceRoll {
+  0%   { transform: rotate(0deg)   scale(1);    }
+  15%  { transform: rotate(-25deg) scale(1.12); }
+  30%  { transform: rotate(20deg)  scale(0.95); }
+  45%  { transform: rotate(-15deg) scale(1.10); }
+  60%  { transform: rotate(10deg)  scale(0.97); }
+  75%  { transform: rotate(-5deg)  scale(1.04); }
+  90%  { transform: rotate(3deg)   scale(0.99); }
+  100% { transform: rotate(0deg)   scale(1);    }
+}
+
+@keyframes shadowPulse {
+  0%, 100% { opacity: 1; transform: translateX(-50%) scaleX(1);   }
+  40%       { opacity: 0; transform: translateX(-50%) scaleX(0.3); }
+}
+
+@keyframes flashValue {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.dice-shell.rolling {
+  animation: diceRoll 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  pointer-events: none;
+}
+
+.dice-shell.rolling .dice-shadow {
+  animation: shadowPulse 0.8s ease-in-out;
+}
+
+.dice-shell.rolling .dice-value {
+  animation: flashValue 0.12s linear infinite;
+}
+
+/* ── Animation : résultat ──────────────────── */
+@keyframes landBounce {
+  0%   { transform: scale(1.15); }
+  50%  { transform: scale(0.92); }
+  75%  { transform: scale(1.05); }
+  100% { transform: scale(1);    }
+}
+
+.dice-shell.landed {
+  animation: landBounce 0.5s ease-out;
+}
+
+/* ── Responsive ────────────────────────────── */
+@media (max-width: 480px) {
+  .dice-face { width: 64px; height: 64px; }
+  .dice-value { font-size: 1.5rem; }
+}
+
+@media (max-width: 360px) {
+  .dice-face { width: 52px; height: 52px; }
+  .dice-value { font-size: 1.2rem; }
+  .dice-label { font-size: 0.52rem; }
+  .dice-shell[data-size="4"] .dice-face,
+  .dice-shell[data-size="10"] .dice-face,
+  .dice-shell[data-size="12"] .dice-face,
+  .dice-shell[data-size="20"] .dice-face { width: 56px; height: 56px; }
+}

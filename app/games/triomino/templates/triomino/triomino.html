@@ -1,0 +1,175 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}Triomino{% endblock %}
+
+
+{% block jeux_styles %}
+  <link rel="stylesheet" href="{{ url_for('triomino.static', filename='css/triomino.css') }}">
+{% endblock %}
+
+{% block game_body %}
+<div class="tr">
+
+  <!-- INTRO -->
+  <div class="tr-intro">
+    <div class="tr-triomino-svg">
+      <svg width="72" height="64" viewBox="0 0 72 64">
+        <polygon points="36,4 68,60 4,60" fill="white" stroke="#7ab0e8" stroke-width="2.5"/>
+        <text x="36" y="30" text-anchor="middle" font-size="13" font-weight="900" fill="#1a4fa0">2</text>
+        <text x="18" y="56" text-anchor="middle" font-size="13" font-weight="900" fill="#1a4fa0">4</text>
+        <text x="54" y="56" text-anchor="middle" font-size="13" font-weight="900" fill="#1a4fa0">3</text>
+      </svg>
+    </div>
+    <p>Les <b>Triominos</b> sont des tuiles triangulaires portant un chiffre à chaque sommet. Posez-les côte à côte en faisant correspondre les chiffres aux pointes, et marquez des points à chaque placement. Celui qui accumule le score le plus élevé remporte la partie !</p>
+  </div>
+
+  <!-- CONTENU -->
+  <div class="tr-section">
+    <div class="tr-section-title">📦 Contenu</div>
+    <div class="tr-rule">
+      <b>56 Triominos</b> (tuiles triangulaires numérotées) · <b>4 réglettes</b> (pour tenir ses tuiles) · <b>1 règle du jeu</b>
+    </div>
+  </div>
+
+  <!-- MISE EN PLACE -->
+  <div class="tr-section">
+    <div class="tr-section-title">⚙️ Mise en place</div>
+    <ol class="tr-steps">
+      <li>Étalez tous les Triominos <b>faces cachées</b> sur la table et mélangez-les.</li>
+      <li>
+        Chaque joueur pioche ses tuiles de départ et les place sur sa réglette, cachées des autres :
+        <div class="tr-setup-grid" style="margin-top:10px;">
+          <div class="tr-setup-block"><strong>2 joueurs</strong>9 Triominos chacun</div>
+          <div class="tr-setup-block"><strong>3 ou 4 joueurs</strong>7 Triominos chacun</div>
+        </div>
+        Les tuiles restantes forment la <b>pioche</b>.
+      </li>
+      <li><b>Détermination du premier joueur :</b> chaque joueur pioche un Triomino et additionne ses 3 chiffres. Celui qui obtient le total le plus élevé commence. En cas d'égalité, re-piocher. Ces tuiles retournent ensuite dans la pioche.</li>
+      <li>Le premier joueur pose l'une de ses tuiles <b>au milieu de la surface de jeu</b> et marque les points correspondants. Le jeu continue dans le sens des aiguilles d'une montre.</li>
+    </ol>
+  </div>
+
+  <!-- DÉROULEMENT -->
+  <div class="tr-section">
+    <div class="tr-section-title" style="background:var(--tr-lblue);">🔄 Déroulement du tour</div>
+
+    <div class="tr-rule">
+      À son tour, un joueur <b>place un Triomino</b> à côté d'une tuile déjà posée.<br>
+      Pour que le coup soit valide, les deux tuiles doivent avoir <b>un côté en commun</b>, ce qui signifie que <span class="hl-b">les deux pointes qui se touchent doivent afficher le même chiffre</span>.<br>
+      <b>On ne peut jouer qu'un seul Triomino par tour.</b> Pour chaque nouvelle tuile posée, toutes les pointes en contact doivent respecter cette règle.
+    </div>
+
+    <div class="tr-fig-row">
+      <div class="tr-fig ok">
+        <div class="fig-title">✔ Coups valides (Fig. B & C)</div>
+        <p>La pointe commune entre les deux tuiles porte le même chiffre de chaque côté. Le Triomino s'insère correctement.</p>
+      </div>
+      <div class="tr-fig ko">
+        <div class="fig-title">✘ Coups non autorisés (Fig. D & E)</div>
+        <p>Les chiffres aux pointes de contact ne correspondent pas, ou la tuile n'est pas alignée avec un côté complet. Le coup est invalide.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="tr-section">
+    <div class="tr-section-title gold">🏆 Score et bonus</div>
+
+    <div class="tr-rule gold">
+      <b>Score de base :</b> à chaque tuile posée, marquez la somme des <b>3 chiffres</b> inscrits dessus.<br>
+      <em>Exemple : une tuile 1-3-4 rapporte 8 points (Fig. A).</em>
+    </div>
+
+    <p style="font-size:.92rem;color:#444;margin-bottom:14px;font-family:'Segoe UI',sans-serif;">En plus de la valeur de la tuile, certaines configurations rapportent des <b>points bonus</b> :</p>
+
+    <div class="tr-bonus-grid">
+      <div class="tr-bonus-card pont">
+        <div class="pts">+40</div>
+        <div class="label">Pont (Fig. F)</div>
+        <div class="desc">La tuile posée a un espace vide de chaque côté, et sa pointe opposée correspond.</div>
+        <div class="pts-bonus">Ex. : 3+4+4+40 = 51 pts</div>
+      </div>
+      <div class="tr-bonus-card hex">
+        <div class="pts">+50</div>
+        <div class="label">Hexagone (Fig. G)</div>
+        <div class="desc">La tuile complète un hexagone formé par 6 Triominos.</div>
+        <div class="pts-bonus">Ex. : 5+5+1+50 = 61 pts</div>
+      </div>
+      <div class="tr-bonus-card dhex">
+        <div class="pts">+60</div>
+        <div class="label">Double hexagone (Fig. H)</div>
+        <div class="desc">La tuile complète un double hexagone (12 Triominos).</div>
+        <div class="pts-bonus">Ex. : 5+3+4+60 = 72 pts</div>
+      </div>
+      <div class="tr-bonus-card thex">
+        <div class="pts">+70</div>
+        <div class="label">Triple hexagone (Fig. I)</div>
+        <div class="desc">La tuile complète un triple hexagone (18 Triominos).</div>
+        <div class="pts-bonus">Ex. : 1+1+3+70 = 75 pts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIOCHE -->
+  <div class="tr-section">
+    <div class="tr-section-title red">🎲 Pioche et pénalités</div>
+
+    <div class="tr-rule">
+      Si un joueur <b>ne peut pas</b> (ou ne veut pas) poser de Triomino, il pioche une tuile et tente aussitôt de la placer. En cas d'échec, il pioche une seconde, puis si nécessaire une troisième et dernière tuile.<br>
+      <b>Chaque tuile piochée coûte 5 points.</b> Si après 3 piochages il ne peut toujours pas jouer, il perd 10 points supplémentaires. Son tour est alors terminé.
+    </div>
+
+    <div class="tr-penalty">
+      <div class="tr-penalty-row">
+        <div class="tr-penalty-pts">−5 pts</div>
+        <div class="tr-penalty-desc">par tuile piochée (jusqu'à 3 tuiles)</div>
+      </div>
+      <div class="tr-penalty-row">
+        <div class="tr-penalty-pts">−10 pts</div>
+        <div class="tr-penalty-desc">supplémentaires si toujours impossible de jouer après 3 piochages</div>
+      </div>
+      <div class="tr-penalty-row" style="background:#ffe8e8;border-radius:6px;padding:8px 10px;border:none;">
+        <div class="tr-penalty-pts" style="font-size:.9rem;">= −25 pts</div>
+        <div class="tr-penalty-desc"><b>Total maximum de pénalité</b> sur un tour (5+5+5+10)</div>
+      </div>
+    </div>
+
+    <div class="tr-rule" style="margin-top:12px;">
+      <b>Pioche vide :</b> si un joueur doit piocher mais que la pioche est vide, il passe son tour <em>sans modifier son score</em>.
+    </div>
+  </div>
+
+  <!-- FIN DE PARTIE -->
+  <div class="tr-section">
+    <div class="tr-section-title green">🏁 Fin de la partie</div>
+
+    <div class="tr-rule green">
+      <b>Fin normale :</b> lorsqu'un joueur pose son <b>dernier Triomino</b>, il remporte <span class="hl-v">+25 points bonus</span> et ajoute à son score la somme des points restant sur les réglettes de tous les autres joueurs.
+    </div>
+    <div class="tr-rule">
+      <b>Blocage général :</b> si plus aucun joueur ne peut jouer et que la pioche est vide, la partie s'arrête immédiatement. Chaque joueur <b>soustrait</b> de son total la valeur des tuiles restant sur sa réglette. Le bonus de 25 points n'est pas attribué.
+    </div>
+    <div class="tr-rule gold">
+      <b>Vainqueur :</b> le joueur ayant le score le plus élevé remporte la partie.
+    </div>
+  </div>
+
+  <!-- RÈGLES OFFICIELLES -->
+  <div class="tr-section">
+    <div class="tr-section-title dark">📋 Règles officielles (tournoi)</div>
+    <div class="tr-callout">
+      Le Triomino peut se jouer de façon décontractée sur une seule manche, voire sans compter les points.<br><br>
+      Pour les <b>tournois</b>, les parties se jouent en <b>400 points</b>, cumulés sur 2 ou 3 manches. Dès qu'un joueur dépasse les 400 points, la manche en cours est la dernière. On termine cette manche avant de désigner le vainqueur.
+    </div>
+  </div>
+
+  <!-- ASTUCE -->
+  <div class="tr-section">
+    <div class="tr-section-title" style="background:var(--tr-lblue);">💡 Astuce stratégique</div>
+    <div class="tr-rule">
+      Chaque tuile est <b>unique</b> dans le jeu. Anticipez le coup suivant en vous créant des emplacements favorables — et cherchez à former des hexagones pour décrocher les gros bonus !
+    </div>
+  </div>
+
+</div>
+{% endblock %}

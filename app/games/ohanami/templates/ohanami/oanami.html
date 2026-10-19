@@ -1,0 +1,52 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}Ohanami{% endblock %}
+
+{% set game_link = url_for('ohanami.oanami_game') %}
+
+{% block game_body %}
+
+  <p>
+    Ohanami est un jeu de cartes créé par Steffen Benndorf dans lequel chaque joueur compose jusqu'à 3 jardins japonais en plaçant des cartes numérotées dans le bon ordre croissant ou décroissant. Le jeu se déroule en 3 manches, et à la fin, le joueur ayant accumulé le plus de points grâce à ses jardins en fleurs de cerisier remporte la partie.
+  </p>
+
+  <h3>Contenu de la boîte</h3>
+  <p>
+    La boîte contient 120 cartes réparties en 4 motifs (bleu, vert, gris et rose), ainsi qu'un bloc d'évaluation pour noter les scores.
+  </p>
+
+  <h3>Mise en place</h3>
+  <p>
+    Mélangez toutes les cartes et distribuez-en <strong>10 à chaque joueur</strong>. Les cartes restantes sont mises de côté ; elles seront utilisées lors des manches suivantes. Préparez une feuille du bloc d'évaluation et un crayon pour compter les points.
+  </p>
+
+  <h3>Déroulement d'une manche</h3>
+  <p>
+    Chaque tour se déroule ainsi : chaque joueur choisit simultanément <strong>2 cartes</strong> de sa main, les pose face cachée devant lui, puis passe les cartes restantes à un voisin (dans le sens des aiguilles d'une montre aux manches 1 et 3, dans le sens inverse à la manche 2).
+  </p>
+  <p>
+    Une fois que tous les joueurs ont choisi leurs 2 cartes et passé le reste, chacun retourne ses cartes et les place dans ses jardins. Le joueur ayant passé ses cartes en dernier pose ses cartes en premier, puis les autres joueurs suivent dans le sens des aiguilles d'une montre.
+  </p>
+  <p>
+    Chaque joueur peut avoir <strong>jusqu'à 3 jardins</strong> (séries de cartes). Une carte peut être ajoutée à un jardin uniquement si elle est <strong>supérieure à la carte la plus haute</strong> ou <strong>inférieure à la carte la plus basse</strong> de ce jardin. Il est impossible d'insérer une carte entre deux cartes existantes. Les cartes que l'on ne peut ou ne souhaite pas jouer sont défaussées face cachée.
+  </p>
+  <p>
+    Une manche se termine quand chaque joueur a joué ses 10 cartes (5 tours de 2 cartes).
+  </p>
+
+  <h3>Comptage des points</h3>
+  <p>
+    Les points sont comptés après chaque manche, et les jardins restent en place d'une manche à l'autre :
+  </p>
+  <ul>
+    <li><strong>Après la 1ère manche :</strong> 3 points par carte bleue.</li>
+    <li><strong>Après la 2ème manche :</strong> 3 points par carte bleue + 4 points par carte verte.</li>
+    <li><strong>Après la 3ème manche :</strong> 3 points par carte bleue + 4 points par carte verte + 7 points par carte grise + points variables pour les cartes roses (selon un barème : 1 carte = 1 pt, 2 = 3 pts, 3 = 6 pts, 4 = 10 pts, 5 = 15 pts… jusqu'à 120 pts pour 15 cartes roses ou plus).</li>
+  </ul>
+
+  <h3>Fin de partie</h3>
+  <p>
+    Après 3 manches, tous les points des 3 manches sont additionnés. <strong>Le joueur ayant le total le plus élevé remporte la partie.</strong> En cas d'égalité, celui qui a posé le plus de cartes roses gagne.
+  </p>
+
+{% endblock %}

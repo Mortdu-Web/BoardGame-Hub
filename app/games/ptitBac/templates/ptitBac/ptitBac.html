@@ -1,0 +1,49 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}P'tit Bac{% endblock %}
+
+
+{% block game_body %}
+  <p>
+    Le P'tit Bac (ou jeu du baccalauréat) est un jeu de vocabulaire où chaque joueur doit trouver des mots commençant par une lettre tirée au sort, dans différentes catégories imposées. Le but est de trouver des mots que les autres n'ont pas trouvés pour marquer le plus de points !
+  </p>
+
+  <h3>Matériel</h3>
+  <p>
+    Une feuille et un stylo par joueur, ainsi qu'un chronomètre (une application sur smartphone fait très bien l'affaire) ou un sablier.
+  </p>
+
+  <h3>Mise en place</h3>
+  <p>
+    Tous les joueurs se mettent d'accord sur les catégories choisies : prénom, ville, sport, artiste célèbre, animal, couleur, légume, fruit… Chaque joueur prend sa feuille en mode paysage et trace autant de colonnes que de catégories choisies, plus une colonne supplémentaire pour comptabiliser les points. Il écrit le nom de chaque catégorie en haut de sa colonne.
+  </p>
+
+  <h3>Déroulement d'un tour</h3>
+  <p>
+    Une lettre est choisie au hasard : par exemple, un joueur récite l'alphabet silencieusement et un autre l'interrompt quand il veut — la lettre sur laquelle il s'arrête est la lettre du tour. On peut aussi écrire chaque lettre sur un papier, les retourner, et en tirer une au sort.
+  </p>
+  <p>
+    Au top départ, le chronomètre est déclenché. Chaque joueur doit inscrire le plus rapidement possible un mot commençant par la lettre choisie dans chacune des catégories (par exemple avec la lettre M : Montpellier pour la ville, marron pour la couleur…).
+  </p>
+  <p>
+    Le jeu s'arrête lorsque le temps s'est écoulé ou lorsque l'un des joueurs a trouvé un mot pour chaque catégorie.
+  </p>
+
+  <h3>Comptage des points</h3>
+  <p>
+    Chaque joueur annonce à voix haute le mot trouvé dans chaque catégorie. Les points sont attribués comme suit :
+  </p>
+  <ul>
+    <li><strong>2 points</strong> pour un mot que personne d'autre n'a trouvé.</li>
+    <li><strong>1 point</strong> pour un mot trouvé par plusieurs joueurs.</li>
+    <li><strong>0 point</strong> si le mot n'existe pas, est mal orthographié, ou si le joueur n'en a pas trouvé.</li>
+  </ul>
+  <p>
+    On procède ensuite de la même manière avec une nouvelle lettre, pour autant de tours que souhaité.
+  </p>
+
+  <h3>Variantes et adaptations</h3>
+  <p>
+    Avec les plus jeunes, le jeu peut se jouer à deux, le joueur le plus âgé se chargeant d'écrire les mots trouvés. Le nombre de catégories peut être réduit ou augmenté selon l'âge des enfants, et le choix des catégories adapté pour simplifier ou complexifier le jeu (par exemple : « ville » pour une version facile, ou « capitales » pour une version plus difficile).
+  </p>
+{% endblock %}

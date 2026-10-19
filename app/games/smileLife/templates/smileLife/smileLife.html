@@ -1,0 +1,193 @@
+{% extends "jeux/baseJeux.html" %}
+
+{% block title %}Smile Life{% endblock %}
+
+
+{% block jeux_styles %}
+
+  <link rel="stylesheet" href="{{ url_for('smileLife.static', filename='css/smilelife.css') }}"/>
+{% endblock %}
+
+{% block game_body %}
+<div class="sl-rules">
+
+  <!-- INTRO -->
+  <div class="sl-intro">
+    <p>Dans <b>Smile Life</b>, vous construisez votre vie de A à Z : faites vos études, choisissez un métier, cumulez des salaires, flirtez, mariez-vous et fondez une famille. Le joueur qui totalise le plus de <b>smiles</b> (😊) à la fin de la partie remporte la victoire !</p>
+    <p style="margin-top:10px 0 0; font-size:.9rem; opacity:.85;">Ayez toujours <b>5 cartes en main</b>. À votre tour : piochez, puis jouez une carte.</p>
+  </div>
+
+  <!-- LES TYPES DE CARTES -->
+  <div class="sl-section">
+    <div class="sl-section-title">🃏 Les types de cartes</div>
+    <div class="sl-cards-grid">
+      <div class="sl-card-type blue">
+        <strong>Cartes pros</strong>
+        <p>Étudier, avoir un métier, cumuler des salaires. Avoir un métier <em>stoppe les études</em>.</p>
+      </div>
+      <div class="sl-card-type pink">
+        <strong>Cartes persos</strong>
+        <p>Flirter, se marier, avoir des enfants. Être marié <em>stoppe les flirts</em>.</p>
+      </div>
+      <div class="sl-card-type green">
+        <strong>Acquisitions</strong>
+        <p>Maisons, voyages (payants) et animaux de compagnie (gratuits). Cumulables une à une.</p>
+      </div>
+      <div class="sl-card-type purple">
+        <strong>Cartes spéciales</strong>
+        <p>Aucun smile. Déclenchent une action. Posées face à vous sans condition.</p>
+      </div>
+      <div class="sl-card-type red">
+        <strong>Malus</strong>
+        <p>Infligés par les autres joueurs pour vous pénaliser. Retournez-les une fois leur effet passé.</p>
+      </div>
+    </div>
+    <div class="sl-tip">Posez vos cartes visiblement face à vous. Le mariage se pose sur les flirts, le métier sur les études. Retournez vos malus une fois passés.</div>
+  </div>
+
+  <!-- VIE PRO -->
+  <div class="sl-section">
+    <div class="sl-section-title">💼 Vie professionnelle</div>
+
+    <p class="sl-text"><b>Études (1 à 6) → Métier → Salaires (niveau 1 à 4)</b><br>
+    Chaque carte métier indique le nombre minimum de cartes études requis pour le poser. Avoir un métier stoppe les études (posez le métier par-dessus).</p>
+
+    <div class="sl-rule-box">
+      <b>Salaires :</b> les salaires vont de 1 à 4 liasses. Ils sont cumulables dans n'importe quel ordre :<br>
+      <span class="hl-pink">1 liasse</span> → salaires niveau 1 posables.<br>
+      <span class="hl-pink">2 liasses</span> → salaires niveaux 1 et 2 posables.<br>
+      <span class="hl-pink">3 liasses</span> → niveaux 1-2-3. <span class="hl-pink">4 liasses</span> → niveaux 1-2-3-4.
+    </div>
+
+    <p class="sl-text"><b>Démissionner :</b> défaussez votre métier sans piocher et passez un tour.</p>
+
+    <div class="sl-rule-box yellow">
+      <b>Statuts professionnels :</b><br>
+      • <span class="hl-blue">Fonctionnaire</span> (profs, policier, militaire) : ne peut pas être licencié.<br>
+      • <span class="hl-blue">Intérimaire</span> (jardinier, serveur, barman, plombier, stripteaser) : peut démissionner avant ou après avoir pioché, puis jouer normalement. Peut aussi changer de métier après avoir pioché dans la défausse.
+    </div>
+  </div>
+
+  <!-- VIE PERSO -->
+  <div class="sl-section">
+    <div class="sl-section-title pink">💕 Vie personnelle</div>
+
+    <p class="sl-text"><b>Flirts (1 à 5) → Mariage → Enfants</b></p>
+
+    <div class="sl-rule-box pink">
+      <b>Flirts :</b> posables tant que vous n'êtes pas marié. Vous pouvez en cumuler <span class="hl-pink">jusqu'à 5</span> face à vous.<br>
+      Avoir <span class="hl-pink">1 flirt ou plus</span> permet de poser un mariage. Certains flirts permettent de poser un enfant (sans être marié).<br><br>
+      <b>Vol de flirt :</b> si vous posez un flirt au même endroit que le dernier flirt (non recouvert) d'un autre joueur, récupérez aussitôt celui-ci pour le poser par-dessus le vôtre.
+    </div>
+
+    <div class="sl-rule-box pink">
+      <b>Mariage :</b> posez-le sur vos flirts. Être marié stoppe les flirts. Le prix des maisons est divisé par deux si vous êtes marié.<br>
+      <b>Divorce :</b> défaussez votre mariage sans piocher et passez un tour. En cas de divorce subi, jetez aussi vos enfants.<br>
+      <b>Adultère :</b> flirtez en étant marié. Pour y mettre fin, défaussez-le (avant ou après avoir pioché). Ses flirts et leurs smiles comptent à la fin.
+    </div>
+  </div>
+
+  <!-- ACQUISITIONS -->
+  <div class="sl-section">
+    <div class="sl-section-title green">🏠 Acquisitions</div>
+
+    <div class="sl-rule-box green">
+      <b>Animaux de compagnie (gratuit) :</b> posables sans condition à votre tour.<br><br>
+      <b>Voyages &amp; Maisons (payant) :</b> retournez vos salaires correspondant au prix (ou apport minimum) indiqué sur la carte. Posez l'acquisition par-dessus, face à vous.<br>
+      Il n'y a <b>jamais de rendu de monnaie</b>. Les salaires investis ne peuvent plus être utilisés ni repris — mais leurs smiles comptent à la fin.
+    </div>
+
+    <div class="sl-tip">Le prix des maisons est divisé par deux si vous êtes marié !</div>
+  </div>
+
+  <!-- DISTINCTIONS -->
+  <div class="sl-section">
+    <div class="sl-section-title" style="background:var(--sl-yellow);color:var(--sl-dark);">🏅 Distinctions</div>
+
+    <div class="sl-rule-box">
+      <b>Légion d'honneur :</b> posable directement — sauf si vous êtes ou avez été bandit, ou avez posé l'attentat. Il est cependant possible de devenir bandit ou de poser l'attentat <em>après</em> l'avoir reçue.
+    </div>
+    <div class="sl-rule-box">
+      <b>Grand prix d'excellence :</b> posable uniquement si vous êtes écrivain, chercheur ou journaliste. Fait passer votre salaire au niveau 4 pour ce métier. L'augmentation cesse si vous quittez ce métier (démission / licenciement). Le grand prix est conservé pour ses smiles en fin de partie. <em>Un seul grand prix par métier concerné.</em>
+    </div>
+    <div class="sl-rule-box">
+      <b>Grand prof :</b> métier + promotion de carrière. Posable uniquement si vous êtes déjà professeur. Défaussez alors votre carte professeur actuelle pour la remplacer.
+    </div>
+  </div>
+
+  <!-- AVANTAGES PRO -->
+  <div class="sl-section">
+    <div class="sl-section-title dark">⚡ Avantages professionnels</div>
+
+    <p class="sl-text">Certains métiers ont un avantage inscrit en bas de leur carte. Les effets <b>instantanés</b> (⚡) s'appliquent une seule fois au moment où le métier est posé. Les effets <b>permanents</b> durent tout le temps du métier.</p>
+
+    <ul class="sl-pros-list">
+      <li><b>Architecte</b> — peut poser une maison sans la payer à un prochain tour (compte pour un tour).</li>
+      <li><b>Astronaute</b> ⚡ — prend une carte au choix dans la défausse pour la jouer de suite.</li>
+      <li><b>Avocat</b> — ne subit pas de divorce (peut divorcer volontairement).</li>
+      <li><b>Bandit</b> — ne peut pas être licencié ni être imposé sur ses revenus.</li>
+      <li><b>Barman</b> — peut cumuler des flirts sans limite (au-delà de 5) tant qu'il n'est pas marié.</li>
+      <li><b>Chef des achats</b> ⚡ — récupère une acquisition payable de la défausse pour l'acheter aussitôt.</li>
+      <li><b>Chef des ventes</b> ⚡ — récupère un salaire posable de la défausse pour le poser aussitôt.</li>
+      <li><b>Chercheur</b> — joue avec 6 cartes au lieu de 5. En cas de départ, jette aussi une carte de sa main.</li>
+      <li><b>Chirurgien / Médecin</b> — ne subit pas de maladies. Peut poursuivre les études en parallèle (non reprises par redoublement).</li>
+      <li><b>Garagiste</b> — ne subit pas d'accidents.</li>
+      <li><b>Journaliste</b> ⚡ — voit les cartes en main des autres joueurs.</li>
+      <li><b>Médium</b> ⚡ — voit les 13 prochaines cartes de la pioche.</li>
+      <li><b>Militaire</b> — la carte attentat ne peut pas être posée en sa présence.</li>
+      <li><b>Pharmacien</b> — ne subit pas de maladies.</li>
+      <li><b>Pilote de ligne</b> — peut poser des voyages sans les payer lors de prochains tours.</li>
+      <li><b>Policier</b> — le bandit et le gourou ne peuvent pas être posés en sa présence (défaussés s'ils le sont déjà).</li>
+    </ul>
+
+    <div class="sl-tip">Une carte récupérée dans la défausse doit pouvoir être jouée de suite selon les règles en vigueur. Ex : pas de mariage sans flirt, pas de salaire sans métier.</div>
+  </div>
+
+  <!-- VARIANTE RIVIÈRE -->
+  <div class="sl-section">
+    <div class="sl-section-title" style="background:#0077b6;">🌊 Variante de la Rivière</div>
+
+    <div class="sl-rule-box">
+      Posez <b>3 cartes face visible</b> à côté de la pioche pour former la rivière.<br>
+      À son tour, chaque joueur pioche dans la <b>pioche</b>, la <b>défausse</b> (pour jouer de suite) ou la <b>rivière</b>.<br>
+      Une carte prise dans la rivière peut être jouée de suite ou gardée en main.<br>
+      Dès qu'une carte de la rivière est prise, elle est remplacée par une carte de la pioche.<br>
+      Si aucun joueur ne prend dans la rivière après un tour complet, elle est défaussée et remplacée par 3 nouvelles cartes.
+    </div>
+  </div>
+
+  <!-- MÉMO DU TOUR -->
+  <div class="sl-section">
+    <div class="sl-memo">
+      <h4>📋 Mémo — Votre tour</h4>
+      <div class="sl-memo-row">
+        <div class="sl-memo-block">
+          <b>📥 Piocher</b>
+          Piochez 1 carte (pioche, défausse ou rivière). Dès 3 joueurs : vous pouvez prendre la dernière carte de la défausse pour la jouer de suite (pas la vôtre).
+        </div>
+        <div class="sl-memo-block">
+          <b>🃏 Jouer</b>
+          Jouez 1 carte face visible : pour vous / un autre joueur (malus) / défausse.
+        </div>
+        <div class="sl-memo-block pink">
+          <b>💼 Vie pro</b>
+          Études (1-6) → Métier → Salaires (niv. 1-4). Démissionner : défaussez le métier sans piocher, passez un tour.
+        </div>
+        <div class="sl-memo-block pink">
+          <b>💕 Vie perso</b>
+          Flirts (1-5) → Mariage → Enfants. Divorcer : défaussez le mariage sans piocher, passez un tour.
+        </div>
+        <div class="sl-memo-block green">
+          <b>🏠 Acheter</b>
+          Retournez vos salaires. Pas de rendu de monnaie. Les smiles des salaires investis comptent à la fin.
+        </div>
+        <div class="sl-memo-block purple">
+          <b>🔴 Malus &amp; Spéciales</b>
+          Malus reçus conservés, cartes perdues défaussées. Cartes spéciales posées face à vous.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

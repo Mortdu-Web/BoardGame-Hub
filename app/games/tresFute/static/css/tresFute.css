@@ -1,0 +1,912 @@
+/* ═══════════════════════════════════════════════════════════════
+   tresFute.css — Thème "plateau néon" calqué sur la fiche originale
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --tf-bg:         #07070d;
+  --tf-panel:      #101019;
+  --tf-panel-2:    #15151f;
+  --tf-line:       rgba(255,255,255,0.08);
+  --tf-text:       #eef0fa;
+  --tf-text-dim:   #8d90a8;
+
+  --tf-gold:       #f0c419;
+  --tf-blue:       #3aa0f2;
+  --tf-green:      #4ede84;
+  --tf-orange:     #ff8a2b;
+  --tf-purple:     #b16bf5;
+  --tf-grey:       #c9cddb;
+  --tf-red:        #e5395a;
+
+  --tf-radius-sm:  10px;
+  --tf-radius-md:  18px;
+  --tf-radius-lg:  28px;
+}
+
+/* ── Fond général ─────────────────────────────────────────── */
+
+.tf-main {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(120,90,255,0.10), transparent 55%),
+    var(--tf-bg);
+  color: var(--tf-text);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  padding: 24px 16px 48px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.page-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.9rem;
+  letter-spacing: 0.03em;
+  color: var(--tf-text);
+  text-shadow: 0 0 18px rgba(255,255,255,0.25);
+}
+.page-header p {
+  margin: 0;
+  color: var(--tf-text-dim);
+  font-size: 0.9rem;
+}
+
+/* ── Zone des scores (chips en haut) ─────────────────────────── */
+
+.tf-score-zone {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 900px;
+  margin: 0 auto 22px;
+}
+
+.tf-score-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--tf-panel);
+  border: 2px solid var(--tf-line);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.tf-score-label { color: var(--tf-text-dim); font-weight: 600; }
+.tf-score-value {
+  min-width: 1.6em;
+  text-align: center;
+  color: var(--tf-text);
+  font-size: 1rem;
+}
+
+.tf-score-chip--yellow { border-color: var(--tf-gold);   box-shadow: 0 0 12px rgba(240,196,25,0.35); }
+.tf-score-chip--yellow .tf-score-value { color: var(--tf-gold); }
+.tf-score-chip--blue   { border-color: var(--tf-blue);   box-shadow: 0 0 12px rgba(58,160,242,0.35); }
+.tf-score-chip--blue   .tf-score-value { color: var(--tf-blue); }
+.tf-score-chip--green  { border-color: var(--tf-green);  box-shadow: 0 0 12px rgba(78,222,132,0.35); }
+.tf-score-chip--green  .tf-score-value { color: var(--tf-green); }
+.tf-score-chip--orange { border-color: var(--tf-orange); box-shadow: 0 0 12px rgba(255,138,43,0.35); }
+.tf-score-chip--orange .tf-score-value { color: var(--tf-orange); }
+.tf-score-chip--purple { border-color: var(--tf-purple); box-shadow: 0 0 12px rgba(177,107,245,0.35); }
+.tf-score-chip--purple .tf-score-value { color: var(--tf-purple); }
+.tf-score-chip--white  { border-color: var(--tf-red);    box-shadow: 0 0 12px rgba(229,57,90,0.35); }
+.tf-score-chip--white  .tf-score-value { color: var(--tf-red); }
+.tf-score-chip--total  {
+  border-color: #fff;
+  background: linear-gradient(135deg, #1c1c2a, #101019);
+  box-shadow: 0 0 16px rgba(255,255,255,0.3);
+}
+.tf-score-chip--total .tf-score-value { color: #fff; font-size: 1.15rem; }
+
+/* ── Feuille (carte principale) ──────────────────────────────── */
+
+.tf-sheet {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tf-section {
+  position: relative;
+  padding: 14px 16px;
+}
+
+.tf-section-label {
+  display: none; /* labels décoratifs internes, non présents sur le visuel d'origine */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CASES — style de base repris/complété pour matcher le visuel
+   (couleurs pilotées ici par section ; la forme vient de case.css)
+   ═══════════════════════════════════════════════════════════════ */
+
+case-fute { display: inline-flex; align-items: center; }
+
+.tf-sheet .case {
+  background: #f4f6fb;
+  border-radius: var(--tf-radius-sm);
+  color: #12121c;
+  font-weight: 800;
+}
+
+.tf-sheet .case__contenu {
+  color: #12121c;
+}
+
+.tf-sheet .case-img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+}
+
+/* ── Renard (case entourable spéciale) ───────────────────────── */
+.renard .case,
+case-fute.renard .case {
+  background: radial-gradient(circle, #2a0f16, #12060a);
+  color: var(--tf-red);
+  box-shadow: 0 0 10px rgba(229,57,90,0.55);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOURS — rangée de 6 dés + rangée bonus
+   ═══════════════════════════════════════════════════════════════ */
+
+.tf-tours-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.tf-tours-container,
+.tf-tours-container-bonus {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tf-tours-container .case {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--tf-radius-md);
+  background: linear-gradient(180deg, #ffffff, #dfe3ee);
+  box-shadow: 0 0 10px rgba(255,255,255,0.25), inset 0 0 0 2px rgba(0,0,0,0.06);
+  font-size: 1.3rem;
+}
+
+.tf-tours-container-bonus .case {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--tf-radius-md);
+  background: linear-gradient(180deg, #2a2a38, #16161f);
+  color: var(--tf-text);
+  border: 2px solid rgba(255,255,255,0.18);
+  font-size: 0.95rem;
+}
+.tf-tours-container-bonus .case__contenu { color: var(--tf-text); }
+
+/* ═══════════════════════════════════════════════════════════════
+   REFRESH & +1 — rangées de pastilles grises en capsule
+   ═══════════════════════════════════════════════════════════════ */
+
+.tf-refresh-section,
+.tf-plusOne-section {
+  background: var(--tf-panel);
+  border: 2px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  padding: 12px 22px;
+}
+
+.tf-refresh-container,
+.tf-plusOne-container {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.tf-refresh-container .case,
+.tf-plusOne-container .case {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #4a4d60, #23242f 70%);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15);
+}
+
+/* Case "+1" du bloc +1 : fond blanc, uniquement celle-ci */
+.tf-plusOne-container case-fute:first-child .case {
+  background: #ffffff;
+  color: #12121c;
+}
+.tf-refresh-container .case--entouree,
+.tf-plusOne-container .case--entouree {
+  box-shadow: inset 0 0 0 3px var(--tf-grey), 0 0 8px rgba(255,255,255,0.4);
+}
+.tf-refresh-container .case--cochee .case__croix line,
+.tf-plusOne-container .case--cochee .case__croix line {
+  stroke: var(--tf-grey);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   JAUNE & BLEU — grilles 4×5 encadrées, fond sombre, glow
+   ═══════════════════════════════════════════════════════════════ */
+
+.tf-yellow-blue-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tf-yellow-blue-row .tf-yellow-section,
+.tf-yellow-blue-row .tf-blue-section {
+  flex: 1 1 0;
+  min-width: 280px;
+}
+
+.tf-yellow-section,
+.tf-blue-section {
+  border-radius: var(--tf-radius-lg);
+  border: 2px solid;
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05), transparent 60%), var(--tf-panel);
+}
+
+.tf-yellow-section {
+  border-color: var(--tf-gold);
+  box-shadow: 0 0 22px rgba(240,196,25,0.25), inset 0 0 30px rgba(240,196,25,0.05);
+}
+.tf-blue-section {
+  border-color: var(--tf-blue);
+  box-shadow: 0 0 22px rgba(58,160,242,0.25), inset 0 0 30px rgba(58,160,242,0.05);
+}
+
+.tf-yellow-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Le HTML réutilise la classe ".tf-blue-container" à deux niveaux différents :
+   une fois comme conteneur racine (score + grille empilés), une fois comme
+   simple rangée des jalons (1,2,4,7…56). On les cible séparément pour éviter
+   que la rangée de jalons hérite du flex-direction:column du conteneur racine. */
+.tf-blue-section > .tf-blue-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tf-blue-score-container > .tf-blue-container {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+.tf-blue-score-container > .tf-blue-container case-fute {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+}
+
+.tf-blue-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tf-yellow-row,
+.tf-blue-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.tf-yellow-section .case,
+.tf-blue-section .case {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff, #e4e7f2);
+  font-size: 1rem;
+}
+
+.tf-yellow-section .case--cochee,
+.tf-blue-section .case--cochee {
+  background: linear-gradient(180deg, #2a2a38, #16161f);
+}
+.tf-yellow-section .case--cochee .case__croix line { stroke: var(--tf-gold); }
+.tf-blue-section   .case--cochee .case__croix line { stroke: var(--tf-blue); }
+
+/* Ligne des totaux (10/14/16/20) sous la grille jaune */
+.tf-yellow-row:last-child .case {
+  background: linear-gradient(180deg, #202030, #101018);
+  color: var(--tf-gold);
+  border: 2px solid rgba(240,196,25,0.4);
+  font-weight: 800;
+}
+.tf-yellow-row:last-child .case__contenu { color: var(--tf-gold); }
+
+.tf-blue-score-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Badges ronds des jalons (1,2,4,7…56)
+   width/height passent en % + max-width : les badges rétrécissent avec
+   la largeur disponible au lieu de forcer le conteneur à s'élargir et
+   de déborder du cadre bleu. */
+.tf-blue-score-container > .tf-blue-container .case {
+  width: 100%;
+  max-width: 30px;
+  aspect-ratio: 1;
+  height: auto;
+  min-width: 0;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid var(--tf-blue);
+  color: var(--tf-blue);
+  font-size: clamp(0.5rem, 1.8vw, 0.62rem);
+}
+.tf-blue-score-container > .tf-blue-container .case__contenu { color: var(--tf-blue); }
+
+/* Rangée fine 1..11 sous les jalons, sans cadre */
+.tf-blue-container-bonus {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+.tf-blue-container-bonus case-fute {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+}
+.tf-blue-container-bonus .case {
+  width: 100%;
+  max-width: 26px;
+  aspect-ratio: 1;
+  height: auto;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--tf-text-dim);
+  font-size: clamp(0.55rem, 1.6vw, 0.68rem);
+  font-weight: 600;
+}
+.tf-blue-container-bonus .case__contenu { color: var(--tf-text-dim); }
+
+.tf-blue-row .case {
+  width: 42px;
+  height: 42px;
+}
+
+/* Case vide en haut à gauche de la grille bleue : ne doit "pas exister"
+   visuellement, mais on garde sa place pour conserver l'alignement de
+   la rangée (visibility, pas display:none). */
+.tf-blue-grid .tf-blue-row:first-child case-fute:first-child {
+  visibility: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VERT / ORANGE / VIOLET — pistes horizontales façon capsule néon
+   ═══════════════════════════════════════════════════════════════ */
+
+.tf-green-section,
+.tf-orange-section,
+.tf-purple-section {
+  border-radius: 999px;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: var(--tf-panel-2);
+}
+
+.tf-green-section  { border-color: var(--tf-green);  box-shadow: 0 0 18px rgba(78,222,132,0.3); }
+.tf-orange-section { border-color: var(--tf-orange); box-shadow: 0 0 18px rgba(255,138,43,0.3); }
+.tf-purple-section { border-color: var(--tf-purple); box-shadow: 0 0 18px rgba(177,107,245,0.3); }
+
+.tf-green-section::before,
+.tf-orange-section::before,
+.tf-purple-section::before {
+  content: "➜";
+  flex: 0 0 auto;
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+.tf-green-section::before  { color: var(--tf-green); }
+.tf-orange-section::before { color: var(--tf-orange); }
+.tf-purple-section::before { color: var(--tf-purple); }
+
+.tf-green-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Contrairement au vert (qui a un div ".tf-green-grid" englobant ses 3
+   rangées), le HTML orange/violet met ses 2 rangées directement en enfants
+   de la section : on bascule la section en grille pour que la flèche ➜
+   couvre les 2 rangées et que celles-ci restent bien horizontales. */
+.tf-orange-section,
+.tf-purple-section {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  row-gap: 6px;
+  column-gap: 14px;
+}
+.tf-orange-section::before,
+.tf-purple-section::before {
+  grid-row: 1 / span 2;
+}
+.tf-orange-container,
+.tf-purple-container {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+.tf-orange-bonus-container,
+.tf-purple-bonus-container {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+}
+
+.tf-green-score-container,
+.tf-green-container,
+.tf-green-bonus-container,
+.tf-orange-container,
+.tf-orange-bonus-container,
+.tf-purple-container,
+.tf-purple-bonus-container {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Chaque case devient un item flexible qui se partage la largeur
+   disponible (au lieu d'une taille fixe en px) : la rangée de 11 cases
+   ne peut plus jamais devenir plus large que le pilulier vert/orange/violet
+   qui l'entoure. */
+.tf-green-score-container case-fute,
+.tf-green-container case-fute,
+.tf-green-bonus-container case-fute,
+.tf-orange-container case-fute,
+.tf-orange-bonus-container case-fute,
+.tf-purple-container case-fute,
+.tf-purple-bonus-container case-fute {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+}
+
+.tf-green-section .case,
+.tf-orange-section .case,
+.tf-purple-section .case {
+  width: 100%;
+  max-width: 34px;
+  aspect-ratio: 1;
+  height: auto;
+  min-width: 0;
+  border-radius: 50%;
+  font-size: clamp(0.55rem, 1.8vw, 0.72rem);
+  background: linear-gradient(180deg, #ffffff, #e4e7f2);
+}
+
+.tf-orange-container .case,
+.tf-purple-container .case {
+  background: linear-gradient(180deg, #22232f, #14141c);
+  color: var(--tf-text);
+  border: 2px solid rgba(255,255,255,0.15);
+}
+.tf-orange-container .case__contenu,
+.tf-purple-container .case__contenu { color: var(--tf-text); }
+
+/* Badges du score vert (1,3,6,10…66) : sceau étoilé vert type "seal" */
+.tf-green-score-container .case {
+  border-radius: 0;
+  border: none;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id%3D%22gbadge%22%20cx%3D%2235%25%22%20cy%3D%2228%25%22%20r%3D%2280%25%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%238bf5b0%22/%3E%0A%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%233ecb6f%22/%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%231c8248%22/%3E%0A%3C/radialGradient%3E%0A%3C/defs%3E%0A%3Cpath%20d%3D%22M%2047.50%2C4.81%20L%2047.50%2C4.81%20Q%2050.00%2C2.00%2052.50%2C4.81%20L%2055.31%2C7.96%20Q%2057.80%2C10.77%2061.18%2C9.13%20L%2064.99%2C7.29%20Q%2068.37%2C5.65%2069.60%2C9.20%20L%2070.99%2C13.19%20Q%2072.22%2C16.74%2075.97%2C16.52%20L%2080.19%2C16.28%20Q%2083.94%2C16.06%2083.72%2C19.81%20L%2083.48%2C24.03%20Q%2083.26%2C27.78%2086.81%2C29.01%20L%2090.80%2C30.40%20Q%2094.35%2C31.63%2092.71%2C35.01%20L%2090.87%2C38.82%20Q%2089.23%2C42.20%2092.04%2C44.69%20L%2095.19%2C47.50%20Q%2098.00%2C50.00%2095.19%2C52.50%20L%2092.04%2C55.31%20Q%2089.23%2C57.80%2090.87%2C61.18%20L%2092.71%2C64.99%20Q%2094.35%2C68.37%2090.80%2C69.60%20L%2086.81%2C70.99%20Q%2083.26%2C72.22%2083.48%2C75.97%20L%2083.72%2C80.19%20Q%2083.94%2C83.94%2080.19%2C83.72%20L%2075.97%2C83.48%20Q%2072.22%2C83.26%2070.99%2C86.81%20L%2069.60%2C90.80%20Q%2068.37%2C94.35%2064.99%2C92.71%20L%2061.18%2C90.87%20Q%2057.80%2C89.23%2055.31%2C92.04%20L%2052.50%2C95.19%20Q%2050.00%2C98.00%2047.50%2C95.19%20L%2044.69%2C92.04%20Q%2042.20%2C89.23%2038.82%2C90.87%20L%2035.01%2C92.71%20Q%2031.63%2C94.35%2030.40%2C90.80%20L%2029.01%2C86.81%20Q%2027.78%2C83.26%2024.03%2C83.48%20L%2019.81%2C83.72%20Q%2016.06%2C83.94%2016.28%2C80.19%20L%2016.52%2C75.97%20Q%2016.74%2C72.22%2013.19%2C70.99%20L%209.20%2C69.60%20Q%205.65%2C68.37%207.29%2C64.99%20L%209.13%2C61.18%20Q%2010.77%2C57.80%207.96%2C55.31%20L%204.81%2C52.50%20Q%202.00%2C50.00%204.81%2C47.50%20L%207.96%2C44.69%20Q%2010.77%2C42.20%209.13%2C38.82%20L%207.29%2C35.01%20Q%205.65%2C31.63%209.20%2C30.40%20L%2013.19%2C29.01%20Q%2016.74%2C27.78%2016.52%2C24.03%20L%2016.28%2C19.81%20Q%2016.06%2C16.06%2019.81%2C16.28%20L%2024.03%2C16.52%20Q%2027.78%2C16.74%2029.01%2C13.19%20L%2030.40%2C9.20%20Q%2031.63%2C5.65%2035.01%2C7.29%20L%2038.82%2C9.13%20Q%2042.20%2C10.77%2044.69%2C7.96%20Z%22%20fill%3D%22%23ffffff%22/%3E%0A%3Cpath%20d%3D%22M%2047.75%2C9.46%20L%2047.75%2C9.46%20Q%2050.00%2C7.00%2052.25%2C9.46%20L%2054.78%2C12.23%20Q%2057.02%2C14.69%2060.04%2C13.28%20L%2063.44%2C11.69%20Q%2066.46%2C10.27%2067.59%2C13.41%20L%2068.87%2C16.93%20Q%2070.00%2C20.07%2073.33%2C19.92%20L%2077.08%2C19.75%20Q%2080.41%2C19.59%2080.25%2C22.92%20L%2080.08%2C26.67%20Q%2079.93%2C30.00%2083.07%2C31.13%20L%2086.59%2C32.41%20Q%2089.73%2C33.54%2088.31%2C36.56%20L%2086.72%2C39.96%20Q%2085.31%2C42.98%2087.77%2C45.22%20L%2090.54%2C47.75%20Q%2093.00%2C50.00%2090.54%2C52.25%20L%2087.77%2C54.78%20Q%2085.31%2C57.02%2086.72%2C60.04%20L%2088.31%2C63.44%20Q%2089.73%2C66.46%2086.59%2C67.59%20L%2083.07%2C68.87%20Q%2079.93%2C70.00%2080.08%2C73.33%20L%2080.25%2C77.08%20Q%2080.41%2C80.41%2077.08%2C80.25%20L%2073.33%2C80.08%20Q%2070.00%2C79.93%2068.87%2C83.07%20L%2067.59%2C86.59%20Q%2066.46%2C89.73%2063.44%2C88.31%20L%2060.04%2C86.72%20Q%2057.02%2C85.31%2054.78%2C87.77%20L%2052.25%2C90.54%20Q%2050.00%2C93.00%2047.75%2C90.54%20L%2045.22%2C87.77%20Q%2042.98%2C85.31%2039.96%2C86.72%20L%2036.56%2C88.31%20Q%2033.54%2C89.73%2032.41%2C86.59%20L%2031.13%2C83.07%20Q%2030.00%2C79.93%2026.67%2C80.08%20L%2022.92%2C80.25%20Q%2019.59%2C80.41%2019.75%2C77.08%20L%2019.92%2C73.33%20Q%2020.07%2C70.00%2016.93%2C68.87%20L%2013.41%2C67.59%20Q%2010.27%2C66.46%2011.69%2C63.44%20L%2013.28%2C60.04%20Q%2014.69%2C57.02%2012.23%2C54.78%20L%209.46%2C52.25%20Q%207.00%2C50.00%209.46%2C47.75%20L%2012.23%2C45.22%20Q%2014.69%2C42.98%2013.28%2C39.96%20L%2011.69%2C36.56%20Q%2010.27%2C33.54%2013.41%2C32.41%20L%2016.93%2C31.13%20Q%2020.07%2C30.00%2019.92%2C26.67%20L%2019.75%2C22.92%20Q%2019.59%2C19.59%2022.92%2C19.75%20L%2026.67%2C19.92%20Q%2030.00%2C20.07%2031.13%2C16.93%20L%2032.41%2C13.41%20Q%2033.54%2C10.27%2036.56%2C11.69%20L%2039.96%2C13.28%20Q%2042.98%2C14.69%2045.22%2C12.23%20Z%22%20fill%3D%22url%28%23gbadge%29%22/%3E%0A%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  color: #ffffff;
+}
+.tf-green-score-container .case__contenu {
+  color: #ffffff;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+.tf-green-container .case--cochee,
+.tf-green-bonus-container .case--cochee {
+  background: linear-gradient(180deg, #163322, #0c1a12);
+}
+.tf-green-container .case--cochee .case__croix line,
+.tf-green-bonus-container .case--cochee .case__croix line { stroke: var(--tf-green); }
+
+.tf-orange-bonus-container .case--cochee {
+  background: linear-gradient(180deg, #33210f, #1a1108);
+}
+.tf-orange-bonus-container .case--cochee .case__croix line { stroke: var(--tf-orange); }
+
+.tf-purple-bonus-container .case--cochee {
+  background: linear-gradient(180deg, #2a1633, #16091c);
+}
+.tf-purple-bonus-container .case--cochee .case__croix line { stroke: var(--tf-purple); }
+
+/* Connecteurs en chevrons "<" entre les cases de la piste violette
+   (détail visible sur le visuel d'origine, propre à cette rangée) */
+.tf-purple-container,
+.tf-purple-bonus-container {
+  gap: 2px;
+}
+
+.purple-middle {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  color: var(--tf-purple);
+  font-weight: 900;
+  font-size: 0.85rem;
+  line-height: 1;
+  opacity: 0.65;
+  user-select: none;
+}
+
+/* Cases "modifiable" (score orange/violet) : input numérique */
+.tf-orange-container .case,
+.tf-purple-container .case {
+  cursor: text;
+}
+.tf-orange-container .case__input,
+.tf-purple-container .case__input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--tf-text);
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+/* Cases vides (aucun attribut, aucun contenu) dans les rangées bonus :
+   invisibles, mais on garde leur place dans la rangée pour rester
+   aligné avec la ligne du dessus (visibility, pas display:none). */
+.tf-green-bonus-container case-fute:not([cochable]):not([entourable]) .case:has(.case__contenu:empty),
+.tf-orange-bonus-container case-fute:not([cochable]):not([entourable]) .case:has(.case__contenu:empty),
+.tf-purple-bonus-container case-fute:not([cochable]):not([entourable]) .case:has(.case__contenu:empty) {
+  visibility: hidden;
+}
+
+/* Multiplicateurs texte (x2 / x3) : plus de style particulier — elles
+   gardent l'apparence badge normale (identique à la case "+1"). */
+
+/* ═══════════════════════════════════════════════════════════════
+   ZONE DES DÉS
+   ═══════════════════════════════════════════════════════════════ */
+
+.tf-dice-zone {
+  max-width: 760px;
+  margin: 28px auto 0;
+  background: var(--tf-panel);
+  border: 2px solid var(--tf-line);
+  border-radius: var(--tf-radius-lg);
+  padding: 18px 20px;
+}
+
+.tf-dice-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tf-dice-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--tf-text);
+}
+
+.tf-dice-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.tf-dice-reroll-btn {
+  padding: 0 16px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid var(--tf-gold);
+  background: linear-gradient(135deg, #3a2e08, #1a1608);
+  color: var(--tf-gold);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(240,196,25,0.3);
+}
+.tf-dice-reroll-btn:hover { filter: brightness(1.2); }
+
+.tf-dice-active,
+.tf-dice-aside,
+.tf-dice-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+
+.tf-dice-aside-wrapper,
+.tf-dice-selected-wrapper {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255,255,255,0.15);
+}
+
+.tf-dice-aside-label {
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tf-text-dim);
+  margin-bottom: 8px;
+}
+
+/* ── Dés colorés (jeu-dice[color]) ───────────────────────────── */
+
+jeu-dice .dice-shell[data-color="blue"]   .dice-face { background: linear-gradient(160deg, var(--tf-blue), #1a5a92);   }
+jeu-dice .dice-shell[data-color="white"]  .dice-face { background: linear-gradient(160deg, #ffffff, #c9cddb); color:#12121c; }
+jeu-dice .dice-shell[data-color="orange"] .dice-face { background: linear-gradient(160deg, var(--tf-orange), #a85417); }
+jeu-dice .dice-shell[data-color="gold"]   .dice-face { background: linear-gradient(160deg, var(--tf-gold), #a7860f);   }
+jeu-dice .dice-shell[data-color="purple"] .dice-face { background: linear-gradient(160deg, var(--tf-purple), #6b2fa0); }
+jeu-dice .dice-shell[data-color="green"]  .dice-face { background: linear-gradient(160deg, var(--tf-green), #1f8c4c);  }
+
+/* ═══════════════════════════════════════════════════════════════
+   BOUTONS GÉNÉRAUX (réinitialiser, reset dés…)
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn-reset {
+  padding: 0 16px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid var(--tf-red);
+  background: linear-gradient(135deg, #3a0f18, #1a080c);
+  color: var(--tf-red);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(229,57,90,0.3);
+}
+.btn-reset:hover { filter: brightness(1.2); }
+
+/* ═══════════════════════════════════════════════════════════════
+   BONUS DISPONIBLES
+   calculScore.js bascule la classe ".bonus-disponible" sur chaque
+   <case-fute> dès que le bonus est débloqué et pas encore utilisé
+   (retirée automatiquement dès qu'elle est cochée / entourée).
+   On affiche un halo pulsant, teinté selon la couleur de la section.
+   ═══════════════════════════════════════════════════════════════ */
+
+.tf-tours-section  case-fute.bonus-disponible { --tf-bonus-glow: #ffffff; }
+.tf-yellow-section  case-fute.bonus-disponible { --tf-bonus-glow: var(--tf-gold); }
+.tf-blue-section    case-fute.bonus-disponible { --tf-bonus-glow: var(--tf-blue); }
+.tf-green-section   case-fute.bonus-disponible { --tf-bonus-glow: var(--tf-green); }
+.tf-orange-section  case-fute.bonus-disponible { --tf-bonus-glow: var(--tf-orange); }
+.tf-purple-section  case-fute.bonus-disponible { --tf-bonus-glow: var(--tf-purple); }
+/* Les renards restent dans leur rouge caractéristique, même si la
+   section qui les entoure a déjà une autre couleur définie plus haut. */
+case-fute.renard.bonus-disponible { --tf-bonus-glow: var(--tf-red); }
+
+case-fute.bonus-disponible .case {
+  position: relative;
+  z-index: 2;
+  animation: tf-bonus-pulse 1.6s ease-in-out infinite;
+}
+
+/* Petit badge étincelle en coin, pour repérer le bonus même sur les
+   écrans qui désactivent les animations (voir prefers-reduced-motion). */
+case-fute.bonus-disponible .case::before {
+  content: "✦";
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 0.6em;
+  line-height: 1;
+  color: var(--tf-bonus-glow, #ffe066);
+  text-shadow: 0 0 6px var(--tf-bonus-glow, #ffe066);
+  pointer-events: none;
+}
+
+@keyframes tf-bonus-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px var(--tf-bonus-glow, #ffe066),
+      0 0 10px 2px var(--tf-bonus-glow, #ffe066);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px var(--tf-bonus-glow, #ffe066),
+      0 0 22px 8px var(--tf-bonus-glow, #ffe066);
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  case-fute.bonus-disponible .case {
+    animation: none;
+    box-shadow:
+      0 0 0 3px var(--tf-bonus-glow, #ffe066),
+      0 0 14px 4px var(--tf-bonus-glow, #ffe066);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Reset de base : évite tout débordement horizontal ────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { max-width: 100%; overflow-x: hidden; }
+
+.tf-main { overflow-x: hidden; }
+
+/* ── Fluide par défaut (s'applique à tous les gabarits) ───────── */
+
+.tf-main {
+  padding: clamp(12px, 4vw, 24px) clamp(8px, 3vw, 16px) clamp(28px, 6vw, 48px);
+}
+
+.tf-sheet {
+  width: 100%;
+  max-width: 760px;
+  padding-inline: 0;
+}
+
+.tf-score-zone {
+  width: 100%;
+}
+
+.tf-dice-zone {
+  width: 100%;
+  max-width: 760px;
+}
+
+/* ── Grand écran (desktop large) ──────────────────────────────── */
+@media (min-width: 1400px) {
+  .tf-sheet,
+  .tf-dice-zone { max-width: 860px; }
+  .page-header h1 { font-size: 2.2rem; }
+}
+
+/* ── Tablette (portrait / petits laptops) ─────────────────────── */
+@media (max-width: 900px) {
+  .tf-yellow-blue-row { gap: 12px; }
+  .tf-yellow-blue-row .tf-yellow-section,
+  .tf-yellow-blue-row .tf-blue-section { min-width: 260px; }
+}
+
+/* ── Mobile standard ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .page-header h1 { font-size: 1.5rem; }
+  .page-header p { font-size: 0.8rem; }
+
+  .tf-score-zone { gap: 6px; }
+  .tf-score-chip { padding: 6px 10px; font-size: 0.75rem; gap: 5px; }
+  .tf-score-chip--total .tf-score-value { font-size: 1rem; }
+
+  .tf-section { padding: 10px 10px; }
+
+  .tf-tours-container .case { width: 44px; height: 44px; font-size: 1.05rem; }
+  .tf-tours-container-bonus .case { width: 38px; height: 38px; font-size: 0.8rem; }
+  .tf-tours-container,
+  .tf-tours-container-bonus { gap: 6px; }
+
+  .tf-refresh-section,
+  .tf-plusOne-section { padding: 10px 12px; }
+  .tf-refresh-container,
+  .tf-plusOne-container { gap: 6px; }
+  .tf-refresh-container .case,
+  .tf-plusOne-container .case { width: 32px; height: 32px; }
+
+  .tf-yellow-blue-row { flex-direction: column; }
+  .tf-yellow-blue-row .tf-yellow-section,
+  .tf-yellow-blue-row .tf-blue-section { min-width: 0; width: 100%; }
+
+  .tf-yellow-section .case,
+  .tf-blue-section .case { width: 36px; height: 36px; font-size: 0.85rem; }
+  .tf-yellow-row,
+  .tf-blue-row { gap: 6px; }
+
+  .tf-green-section .case,
+  .tf-orange-section .case,
+  .tf-purple-section .case { max-width: 26px; min-width: 0; font-size: 0.6rem; }
+  .tf-blue-score-container > .tf-blue-container .case { max-width: 24px; }
+  .tf-blue-container-bonus .case { max-width: 20px; }
+  .purple-middle { width: 6px; font-size: 0.7rem; }
+  .tf-green-section::before,
+  .tf-orange-section::before,
+  .tf-purple-section::before { font-size: 1rem; }
+
+  .tf-green-section,
+  .tf-orange-section,
+  .tf-purple-section { padding: 8px 12px; gap: 8px; }
+
+  .tf-dice-zone { padding: 14px 12px; }
+  .tf-dice-header { flex-direction: column; align-items: stretch; text-align: center; }
+  .tf-dice-controls { justify-content: center; flex-wrap: wrap; }
+  .tf-dice-reroll-btn,
+  .btn-reset { flex: 1 1 140px; }
+
+  .control-group { flex-direction: column; gap: 10px; padding-inline: 8px; }
+  .btn-envoyer,
+  .btn-reset-sauvegarde { width: 100%; }
+}
+
+/* ── Petits téléphones ─────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .tf-score-zone { gap: 5px; }
+  .tf-score-chip { padding: 5px 8px; font-size: 0.68rem; }
+
+  .tf-tours-container .case { width: 38px; height: 38px; font-size: 0.9rem; }
+  .tf-tours-container-bonus .case { width: 32px; height: 32px; font-size: 0.7rem; }
+
+  .tf-yellow-section .case,
+  .tf-blue-section .case { width: 30px; height: 30px; font-size: 0.72rem; }
+
+  .tf-green-section .case,
+  .tf-orange-section .case,
+  .tf-purple-section .case { max-width: 21px; font-size: 0.5rem; }
+  .tf-blue-score-container > .tf-blue-container .case { max-width: 19px; }
+  .tf-blue-container-bonus .case { max-width: 16px; }
+
+  .tf-green-score-container,
+  .tf-green-container,
+  .tf-green-bonus-container,
+  .tf-orange-container,
+  .tf-orange-bonus-container,
+  .tf-purple-container,
+  .tf-purple-bonus-container { gap: 3px; }
+
+  .purple-middle { width: 4px; font-size: 0.6rem; }
+
+  .tf-modal { max-width: 100%; }
+  .tf-modal-form { padding: 14px; }
+}
+
+/* ── Très petits écrans (≤ 340px) ────────────────────────────────── */
+@media (max-width: 340px) {
+  .tf-score-zone { flex-direction: column; align-items: stretch; }
+  .tf-score-chip { justify-content: space-between; }
+
+  .tf-tours-container .case { width: 34px; height: 34px; font-size: 0.8rem; }
+  .tf-yellow-section .case,
+  .tf-blue-section .case { width: 26px; height: 26px; font-size: 0.62rem; }
+}
+
+/* ── Mode paysage bas (mobile couché) ──────────────────────────── */
+@media (max-height: 480px) and (orientation: landscape) {
+  .page-header { margin-bottom: 8px; }
+  .tf-sheet { gap: 10px; }
+  .tf-section { padding: 8px 10px; }
+}

@@ -8,7 +8,7 @@ from flask import current_app, g
 from psycopg.rows import dict_row
 
 SCHEMA = """
-SELECT pg_advisory_xact_lock(727001);  -- évite les courses entre workers gunicorn au démarrage
+SELECT pg_advisory_xact_lock(727001);  -- evite les courses entre workers gunicorn au demarrage
 
 CREATE TABLE IF NOT EXISTS joueurs (
     id     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -42,6 +42,7 @@ def _connect() -> psycopg.Connection:
         password=cfg["DB_PASSWORD"],
         row_factory=dict_row,
         connect_timeout=10,
+        client_encoding="UTF8",
     )
 
 

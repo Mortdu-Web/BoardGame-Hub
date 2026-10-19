@@ -82,6 +82,18 @@
       });
   }
 
+  // Preselectionne le joueur connecte (facultatif : on ignore toute erreur)
+  async function selectionnerJoueurCourant() {
+    try {
+      const res = await fetch(`${API_BASE}/api/joueur-courant`);
+      if (!res.ok) return;
+      const courant = await res.json();
+      if (courant && courant.id != null && selectJoueur.querySelector(`option[value="${courant.id}"]`)) {
+        selectJoueur.value = String(courant.id);
+      }
+    } catch (_) { /* pas de presélection */ }
+  }
+
   async function chargerParties() {
     const res = await fetch(`${API_BASE}/api/parties`);
     if (!res.ok) throw new Error("Impossible de charger la liste des parties.");
@@ -111,6 +123,7 @@
 
     try {
       await Promise.all([chargerJoueurs(), chargerParties()]);
+      await selectionnerJoueurCourant();
     } catch (err) {
       afficherErreur(err.message);
     } finally {

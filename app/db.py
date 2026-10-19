@@ -11,9 +11,10 @@ SCHEMA = """
 SELECT pg_advisory_xact_lock(727001);  -- evite les courses entre workers gunicorn au demarrage
 
 CREATE TABLE IF NOT EXISTS joueurs (
-    id     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    prenom TEXT NOT NULL,
-    nom    TEXT NOT NULL
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    prenom      TEXT NOT NULL,
+    nom         TEXT NOT NULL,
+    keycloak_id TEXT UNIQUE
 );
 CREATE UNIQUE INDEX IF NOT EXISTS joueurs_nom_prenom_uniq ON joueurs (LOWER(prenom), LOWER(nom));
 
@@ -76,8 +77,61 @@ def init_app(app) -> None:
 
 # ── Joueurs ──────────────────────────────────────────────────────────────────
 
-def get_all_joueurs() -> list[dict]:
-    return get_db().execute("SELECT id, prenom, nom FROM joueurs ORDER BY nom, prenom").fetchall()
+def get_all_joueurs(keycloak_only: bool = False) -> list[dict]:
+    sql = "SELECT id, prenom, nom FROM joueurs"
+    if keycloak_only:
+        sql += " WHERE keycloak_id IS NOT NULL"
+    return get_db().execute(sql + " ORDER BY nom, prenom").fetchall()
+
+
+def get_joueur_by_keycloak_id(keycloak_id: str) -> dict | None:
+    return get_db().execute(
+        "SELECT id, prenom, nom FROM joueurs WHERE keycloak_id = %s", (keycloak_id,)
+    ).fetchone()
+
+
+def sync_keycloak_users(users: list[dict]) -> list[dict]:
+    """users = [{"keycloak_id", "prenom", "nom"}].
+
+    Retourne [{"id", "prenom", "nom"}] ou `id` est joueurs.id (les scores restent lies a cette table).
+    Un utilisateur Keycloak inconnu est rattache au joueur existant de meme prenom/nom (sans compte lie),
+    sinon un joueur est cree.
+    """
+    users = [u for u in users if u.get("keycloak_id")]
+    if not users:
+        return []
+    ids = [u["keycloak_id"] for u in users]
+    db = get_db()
+    connus = {
+        r["keycloak_id"]
+        for r in db.execute("SELECT keycloak_id FROM joueurs WHERE keycloak_id = ANY(%s)", (ids,)).fetchall()
+    }
+    try:
+        for u in users:
+            if u["keycloak_id"] in connus:
+                continue
+            prenom, nom = (u.get("prenom") or "").strip(), (u.get("nom") or "").strip()
+            rattache = db.execute(
+                """UPDATE joueurs SET keycloak_id = %s
+                   WHERE id = (SELECT id FROM joueurs
+                               WHERE keycloak_id IS NULL
+                                 AND LOWER(prenom) = LOWER(%s) AND LOWER(nom) = LOWER(%s)
+                               ORDER BY id LIMIT 1)
+                   RETURNING id""",
+                (u["keycloak_id"], prenom, nom),
+            ).fetchone()
+            if rattache is None:
+                db.execute(
+                    "INSERT INTO joueurs (prenom, nom, keycloak_id) VALUES (%s, %s, %s) ON CONFLICT DO NOTHING",
+                    (prenom, nom, u["keycloak_id"]),
+                )
+        db.commit()
+    except psycopg.Error:
+        db.rollback()
+        raise
+    return db.execute(
+        "SELECT id, prenom, nom FROM joueurs WHERE keycloak_id = ANY(%s) ORDER BY nom, prenom", (ids,)
+    ).fetchall()
 
 
 def joueur_exists(prenom: str, nom: str) -> bool:

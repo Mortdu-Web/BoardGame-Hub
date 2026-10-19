@@ -1,10 +1,10 @@
 from flask import render_template, request, jsonify
+from app import users
 from app.helpers import make_blueprint, require_auth
 
 from app.db import (
     create_joueur,
     create_partie_simple,
-    get_all_joueurs,
     get_parties_by_jeu,
     joueur_exists,
 )
@@ -37,7 +37,14 @@ def tresFute_game():
 @require_auth()
 def api_get_joueurs():
     """Retourne la liste des joueurs existants."""
-    return jsonify(get_all_joueurs())
+    return jsonify(users.list_players())
+
+
+@bp.route("/api/joueur-courant", methods=["GET"])
+@require_auth()
+def api_joueur_courant():
+    """Joueur correspondant a l'utilisateur connecte ({} si aucun)."""
+    return jsonify(users.current_joueur() or {})
 
 
 @bp.route("/api/joueurs", methods=["POST"])

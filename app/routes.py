@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from flask import Blueprint, current_app, jsonify, redirect, render_template, request, url_for
 
-from . import db
+from . import db, users
 from .helpers import require_auth
 from .registry import discover
 
@@ -21,7 +21,7 @@ def hub():
 @bp.route("/players")
 @require_auth()
 def players():
-    return jsonify(db.get_all_joueurs())
+    return jsonify(users.list_players())
 
 
 def _safe_next(url: str | None) -> str:

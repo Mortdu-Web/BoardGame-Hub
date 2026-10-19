@@ -47,8 +47,18 @@ présentation. Le jeu apparaît seul sur le hub au redémarrage. Copier `ohanami
 présentation) comme modèle.
 
 ## Données
-Les joueurs, parties et scores sont stockés en SQLite : `instance/gamehub.sqlite3` par défaut, ou `DATABASE_PATH`.
-En Docker, monter un volume sur ce dossier pour ne pas perdre les données.
+Les joueurs, parties et scores sont stockés dans une base **PostgreSQL hébergée sur une autre machine**.
+Renseigner dans le `.env` : `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
+Les tables sont créées automatiquement au démarrage si elles n'existent pas. Le serveur PostgreSQL doit accepter
+les connexions depuis la machine qui héberge le conteneur (`listen_addresses`, `pg_hba.conf`, pare-feu).
+
+## Docker
+```bash
+cp .env.example .env                 # renseigner PORT, SECRET_KEY et DB_*
+docker network create web            # une seule fois (réseau partagé avec le reverse proxy / l'auth)
+docker compose up -d --build
+```
+En production (auth activée) : `WITH_AUTH=true docker compose up -d --build` avec `AUTH_ENABLED=true` dans le `.env`.
 
 ## Jeu en ligne
 Ajouter des routes sur le blueprint du jeu. Attention : gunicorn lance plusieurs workers, l'état d'une partie en cours

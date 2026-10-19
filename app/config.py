@@ -20,9 +20,12 @@ class Config:
     PUBLIC_URL = os.getenv("PUBLIC_URL", "http://localhost:5000").rstrip("/")
     BEHIND_PROXY = _bool("BEHIND_PROXY", False)
 
-    # Base SQLite (joueurs, parties, scores). Par défaut : <instance>/gamehub.sqlite3.
-    # En Docker, monter un volume sur ce dossier pour conserver les données.
-    DATABASE_PATH = os.getenv("DATABASE_PATH") or None
+    # Base PostgreSQL hébergée sur une autre machine (voir .env).
+    DB_HOST = os.getenv("DB_HOST", "")
+    DB_PORT = int(os.getenv("DB_PORT") or 5432)
+    DB_NAME = os.getenv("DB_NAME", "")
+    DB_USER = os.getenv("DB_USER", "")
+    DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 
     # Authentification via le paquet auth_client (service d'auth séparé).
     # Désactivée par défaut pour pouvoir développer en local sans le service.

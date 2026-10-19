@@ -64,10 +64,14 @@ def init_app(app) -> None:
         raise RuntimeError(f"Variables manquantes dans le .env : {', '.join(missing)}")
 
     app.teardown_appcontext(_close_db)
-    with app.app_context():
-        db = get_db()
-        db.execute(SCHEMA)
-        db.commit()
+
+    # Les tables existent deja sur le serveur : on ne les cree que si DB_AUTO_CREATE=true
+    # (base vide). Cette operation exige les droits CREATE sur le schema public.
+    if app.config.get("DB_AUTO_CREATE"):
+        with app.app_context():
+            db = get_db()
+            db.execute(SCHEMA)
+            db.commit()
 
 
 # ── Joueurs ──────────────────────────────────────────────────────────────────

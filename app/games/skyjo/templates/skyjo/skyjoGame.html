@@ -12,8 +12,5 @@
 {% block submit_url %}{{ url_for('skyjo.skyjo_submit') }}{% endblock %}
 
 {% block game_script %}
-  <script>
-    const NEW_PLAYER_URL = "{{ url_for('jeux.nouveau_joueur') }}";
-  </script>
   <script type="module" src="{{ url_for('skyjo.static', filename='js/skyjo.js') }}"></script>
 {% endblock %}

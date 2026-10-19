@@ -6,12 +6,16 @@
  * et une ligne "Total" en tête de tableau se recalcule en direct.
  * Ce script est donc autonome (n'utilise pas GameScore de base.js).
  *
- * PLAYERS_URL, SUBMIT_URL et NEW_PLAYER_URL sont injectés globalement par Jinja2.
+ * PLAYERS_URL, GUESTS_URL et SUBMIT_URL sont injectés globalement par Jinja2.
+ * L'entrée du compte partagé « jeux » ouvre le modal de guest-picker.js (choix/création d'un joueur).
  */
+
+const GENERIC_VALUE = "__generic__";
 
 class SkyjoScore {
   constructor() {
     this.players    = [];
+    this.guests     = new Map(); // joueurs de « jeux » choisis dans la page : id → {id, prenom, nom}
     this.nbJoueurs  = 2;
     this.maxPlayers = 8;
     this.round      = 0; // nombre de manches actuellement affichées
@@ -61,29 +65,50 @@ class SkyjoScore {
     defaultOpt.textContent = `--J${j}--`;
     sel.appendChild(defaultOpt);
 
+    // Entrée « jeux » (compte partagé) : id null + generic → on choisit ensuite un de ses joueurs
     this.players.forEach(p => {
       const opt       = document.createElement("option");
-      opt.value       = p.id;
-      opt.textContent = `${p.prenom} ${p.nom}`;
+      opt.value       = p.generic ? GENERIC_VALUE : p.id;
+      opt.textContent = p.generic ? `${p.prenom} (choisir un joueur…)` : `${p.prenom} ${p.nom}`;
       sel.appendChild(opt);
     });
 
-    const addOpt       = document.createElement("option");
-    addOpt.value       = "__new__";
-    addOpt.textContent = "+ Nouveau joueur";
-    sel.appendChild(addOpt);
+    // Joueurs de « jeux » déjà choisis dans cette page : on les garde sélectionnables
+    this.guests.forEach(g => this._addGuestOption(sel, g));
 
-    sel.addEventListener("change", () => {
-      if (sel.value === "__new__") {
-        const next = encodeURIComponent(window.location.href);
-        window.location.href = `${NEW_PLAYER_URL}?next=${next}`;
-        return;
+    sel.dataset.prev = "";
+    sel.addEventListener("change", async () => {
+      if (sel.value === GENERIC_VALUE) {
+        const guest = await window.GuestPicker?.open();
+        if (guest) {
+          this.guests.set(guest.id, guest);
+          this._addGuestOption(sel, guest);
+          sel.value = String(guest.id);
+        } else {
+          sel.value = sel.dataset.prev;   // annulé : on revient à la sélection précédente
+        }
       }
+      sel.dataset.prev = sel.value;
       this._updatePlayerHeader(j);
       this._updateTotals();
     });
 
     return sel;
+  }
+
+  // Ajoute (une seule fois) l'option d'un joueur de « jeux », avant l'entrée « jeux ».
+  _addGuestOption(sel, guest) {
+    if (sel.querySelector(`option[value="${guest.id}"]`)) return;
+    const opt       = document.createElement("option");
+    opt.value       = guest.id;
+    opt.textContent = `${guest.prenom} ${guest.nom}`;
+    sel.insertBefore(opt, sel.querySelector(`option[value="${GENERIC_VALUE}"]`));
+  }
+
+  // Joueur (Keycloak ou « jeux ») correspondant à la valeur d'un select.
+  _findPlayer(value) {
+    const id = parseInt(value);
+    return this.players.find(p => p.id === id) ?? this.guests.get(id) ?? null;
   }
 
   _updatePlayerHeader(j) {
@@ -96,8 +121,8 @@ class SkyjoScore {
     const nom = document.createElement("span");
     nom.className = "player-nom";
 
-    if (sel.value && sel.value !== "__new__") {
-      const player = this.players.find(p => p.id === parseInt(sel.value));
+    if (sel.value && sel.value !== GENERIC_VALUE) {
+      const player = this._findPlayer(sel.value);
       prenom.textContent = player?.prenom ?? `--J${j}--`;
       nom.textContent    = player?.nom    ?? "";
     } else {
@@ -256,8 +281,8 @@ class SkyjoScore {
     const result = [];
     for (let j = 1; j <= this.nbJoueurs; j++) {
       const sel      = document.getElementById(`player_j${j}`);
-      const playerId = sel?.value && sel.value !== "__new__" ? parseInt(sel.value) : null;
-      const player   = this.players.find(p => p.id === playerId) ?? null;
+      const playerId = sel?.value && sel.value !== GENERIC_VALUE ? parseInt(sel.value) : null;
+      const player   = playerId === null ? null : this._findPlayer(playerId);
       result.push({
         joueur: j,
         id:     playerId,

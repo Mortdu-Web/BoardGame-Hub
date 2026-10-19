@@ -14,32 +14,84 @@ def _fetch_keycloak_users() -> list[dict]:
     return resp.json()["users"]
 
 
-def list_players() -> list[dict]:
-    """[{id, prenom, nom}] : utilisateurs Keycloak si l'auth est active, sinon table joueurs (dev local)."""
-    if not Config.AUTH_ENABLED:
-        return db.get_all_joueurs()
-    try:
-        kc_users = _fetch_keycloak_users()
-    except (requests.RequestException, ValueError, KeyError):
-        current_app.logger.exception("Liste Keycloak indisponible : repli sur les joueurs deja rattaches")
-        return db.get_all_joueurs(keycloak_only=True)
+def _is_generic(username: str | None) -> bool:
+    return bool(Config.AUTH_GENERIC_USERNAME) and (username or "").strip().lower() == Config.AUTH_GENERIC_USERNAME
 
-    return db.sync_keycloak_users(
-        [
-            {
-                "keycloak_id": u.get("id"),
-                "prenom": u.get("firstName") or u.get("username") or "",
-                "nom": u.get("lastName") or "",
-            }
-            for u in kc_users
-        ]
-    )
+
+def _generic_entry(kc_users: list[dict] | None = None) -> dict | None:
+    """Entree du compte generique dans la liste : id None + generic True.
+
+    Selectionner cette entree ouvre le choix d'un joueur parmi ceux de « jeux ».
+    """
+    if not Config.AUTH_GENERIC_USERNAME:
+        return None
+    for u in kc_users or []:
+        if _is_generic(u.get("username")):
+            prenom = u.get("firstName") or u.get("username") or Config.AUTH_GENERIC_USERNAME
+            return {"id": None, "generic": True, "prenom": prenom, "nom": u.get("lastName") or ""}
+    return {"id": None, "generic": True, "prenom": Config.AUTH_GENERIC_USERNAME.capitalize(), "nom": ""}
+
+
+def list_players() -> list[dict]:
+    """Liste des comptes proposes dans les selects de joueurs.
+
+    [{id, prenom, nom}] pour chaque utilisateur Keycloak, plus une entree {id: None, generic: True, ...}
+    pour le compte generique « jeux » (ses joueurs sont obtenus via list_guests()).
+
+    Sans auth (dev local) ou si Keycloak est injoignable : joueurs deja rattaches a un compte Keycloak en base.
+    """
+    kc_users: list[dict] | None = None
+    comptes: list[dict]
+    if Config.AUTH_ENABLED:
+        try:
+            kc_users = _fetch_keycloak_users()
+        except (requests.RequestException, ValueError, KeyError):
+            current_app.logger.exception("Liste Keycloak indisponible : repli sur les comptes deja connus en base")
+
+    if kc_users is None:
+        comptes = db.get_all_joueurs(keycloak_only=True)
+    else:
+        comptes = db.sync_keycloak_users(
+            [
+                {
+                    "keycloak_id": u.get("id"),
+                    "prenom": u.get("firstName") or u.get("username") or "",
+                    "nom": u.get("lastName") or "",
+                }
+                for u in kc_users
+                if not _is_generic(u.get("username"))
+            ]
+        )
+    comptes = sorted(comptes, key=lambda j: ((j["nom"] or "").lower(), (j["prenom"] or "").lower()))
+    generic = _generic_entry(kc_users)
+    return comptes + ([generic] if generic else [])
+
+
+def list_guests() -> list[dict]:
+    """Joueurs du compte generique « jeux » (sans compte Keycloak propre)."""
+    return db.get_guest_joueurs()
+
+
+def create_guest(prenom: str, nom: str) -> tuple[dict | None, str | None]:
+    return db.add_guest_player(prenom, nom)
+
+
+def current_account() -> dict:
+    """{generic: bool, joueur: {id, prenom, nom} | None} pour l'utilisateur connecte.
+
+    generic=True : compte « jeux », qui choisit/cree ses joueurs a la main (joueur = None).
+    """
+    user = getattr(g, "user", None)
+    generic = bool(Config.AUTH_ENABLED and user and _is_generic(user.get("username")))
+    return {"generic": generic, "joueur": None if generic else current_joueur()}
 
 
 def current_joueur() -> dict | None:
     """Joueur correspondant a l'utilisateur connecte (g.user, pose par require_auth), cree si besoin."""
     user = getattr(g, "user", None)
     if not Config.AUTH_ENABLED or not user or not user.get("sub"):
+        return None
+    if _is_generic(user.get("username")):  # compte partage : le joueur est choisi a la main
         return None
 
     joueur = db.get_joueur_by_keycloak_id(user["sub"])

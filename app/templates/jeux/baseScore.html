@@ -7,8 +7,11 @@
 
 {% block head_scripts %}
   <script>
-    const PLAYERS_URL = "{{ url_for('jeux.players') }}";
+    const PLAYERS_URL    = "{{ url_for('jeux.players') }}";
+    const PLAYER_ME_URL  = "{{ url_for('jeux.players_me') }}";
+    const GUESTS_URL     = "{{ url_for('jeux.guests') }}";
   </script>
+  <script src="{{ url_for('jeux.static', filename='js/guest-picker.js') }}"></script>
 {% endblock %}
 
 {% block content %}

@@ -1,9 +1,7 @@
 """Blueprint « jeux » : hub, liste des joueurs et ressources statiques communes."""
-from urllib.parse import urlparse
+from flask import Blueprint, current_app, jsonify, render_template, request
 
-from flask import Blueprint, current_app, jsonify, redirect, render_template, request, url_for
-
-from . import db, users
+from . import users
 from .helpers import require_auth
 from .registry import discover
 
@@ -21,33 +19,30 @@ def hub():
 @bp.route("/players")
 @require_auth()
 def players():
+    """Utilisateurs Keycloak + entree `generic` pour le compte « jeux » (ses joueurs : /players/guests)."""
     return jsonify(users.list_players())
 
 
-def _safe_next(url: str | None) -> str:
-    """N'autorise que les redirections vers ce site."""
-    default = url_for("jeux.hub")
-    if not url:
-        return default
-    parts = urlparse(url)
-    if parts.scheme in ("http", "https") and parts.netloc == request.host:
-        return url
-    if not parts.scheme and not parts.netloc and url.startswith("/") and not url.startswith("//"):
-        return url
-    return default
-
-
-@bp.route("/joueurs/nouveau", methods=["GET", "POST"])
+@bp.route("/players/me")
 @require_auth()
-def nouveau_joueur():
-    next_url = _safe_next(request.args.get("next") or request.form.get("next"))
-    error = None
+def players_me():
+    """{generic, joueur} : le compte connecte est-il « jeux », et sinon son joueur."""
+    return jsonify(users.current_account())
 
-    if request.method == "POST":
-        success, error = db.add_new_player(
-            request.form.get("nom", ""), request.form.get("prenom", "")
-        )
-        if success:
-            return redirect(next_url)
 
-    return render_template("jeux/newPlayer.html", next_url=next_url, error=error)
+@bp.route("/players/guests", methods=["GET"])
+@require_auth()
+def guests():
+    """Joueurs rattaches au compte « jeux »."""
+    return jsonify(users.list_guests())
+
+
+@bp.route("/players/guests", methods=["POST"])
+@require_auth()
+def create_guest():
+    """Cree un joueur de « jeux ». Attend { "prenom": str, "nom": str }."""
+    data = request.get_json(silent=True) or {}
+    joueur, error = users.create_guest(data.get("prenom"), data.get("nom"))
+    if joueur is None:
+        return jsonify({"error": error}), 409 if "existe" in (error or "") else 400
+    return jsonify(joueur), 201

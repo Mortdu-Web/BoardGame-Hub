@@ -34,6 +34,9 @@ class Config:
     AUTH_ENABLED = _bool("AUTH_ENABLED", False)
     AUTH_INTERNAL_URL = os.getenv("AUTH_INTERNAL_URL", "")
     AUTH_PUBLIC_URL = os.getenv("AUTH_PUBLIC_URL", "")
+    # Compte Keycloak generique partage (ex. "jeux") : il n'est pas un joueur, les vrais joueurs
+    # (prenom/nom) sont choisis ou crees dans le hub. Vide = pas de compte generique.
+    AUTH_GENERIC_USERNAME = os.getenv("AUTH_GENERIC_USERNAME", "jeux").strip().lower()
 
     SESSION_COOKIE_NAME = "site_session"
     SESSION_COOKIE_DOMAIN = os.getenv("SESSION_COOKIE_DOMAIN") or None

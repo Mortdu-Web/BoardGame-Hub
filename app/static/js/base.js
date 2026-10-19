@@ -16,13 +16,19 @@
  *   buildPayload(nb, rows, players)    : any
  * }
  *
- * PLAYERS_URL, SUBMIT_URL et NEW_PLAYER_URL sont injectés globalement par Jinja2.
+ * PLAYERS_URL, GUESTS_URL et SUBMIT_URL sont injectés globalement par Jinja2.
+ *
+ * Les selects de joueurs listent les utilisateurs Keycloak ; l'entrée du compte partagé « jeux »
+ * ouvre un modal (guest-picker.js) pour choisir ou créer un de ses joueurs.
  */
+
+const GENERIC_VALUE = "__generic__";
 
 export class GameScore {
   constructor(config) {
     this.config     = config;
     this.players    = [];
+    this.guests     = new Map(); // joueurs de « jeux » choisis dans la page : id → {id, prenom, nom}
     this.nbJoueurs  = 2;
     this.maxPlayers = config.maxPlayers ?? 6;
     this.showSaison = config.showSaison ?? true;
@@ -86,28 +92,50 @@ export class GameScore {
     defaultOpt.textContent = `— J${j} —`;
     sel.appendChild(defaultOpt);
 
+    // Entrée « jeux » (compte partagé) : id null + generic → on choisit ensuite un de ses joueurs
     this.players.forEach(p => {
       const opt       = document.createElement("option");
-      opt.value       = p.id;
-      opt.textContent = `${p.prenom}\n${p.nom}`;
+      opt.value       = p.generic ? GENERIC_VALUE : p.id;
+      opt.textContent = p.generic ? `${p.prenom} (choisir un joueur…)` : `${p.prenom}\n${p.nom}`;
       sel.appendChild(opt);
     });
 
-    const addOpt       = document.createElement("option");
-    addOpt.value       = "__new__";
-    addOpt.textContent = "+ Nouveau joueur";
-    sel.appendChild(addOpt);
+    // Joueurs de « jeux » déjà choisis dans cette page : on les garde sélectionnables
+    this.guests.forEach(g => this._addGuestOption(sel, g));
 
-    sel.addEventListener("change", () => {
-      if (sel.value === "__new__") {
-        const next = encodeURIComponent(window.location.href);
-        window.location.href = `${NEW_PLAYER_URL}?next=${next}`;
+    sel.dataset.prev = "";
+    sel.addEventListener("change", async () => {
+      if (sel.value === GENERIC_VALUE) {
+        const guest = await window.GuestPicker?.open();
+        if (guest) {
+          this.guests.set(guest.id, guest);
+          this._addGuestOption(sel, guest);
+          sel.value = String(guest.id);
+        } else {
+          sel.value = sel.dataset.prev;   // annulé : on revient à la sélection précédente
+        }
       }
+      sel.dataset.prev = sel.value;
       this._updatePlayerHeader(j);
       this._updateScores();
     });
 
     return sel;
+  }
+
+  // Ajoute (une seule fois) l'option d'un joueur de « jeux », avant l'entrée « jeux ».
+  _addGuestOption(sel, guest) {
+    if (sel.querySelector(`option[value="${guest.id}"]`)) return;
+    const opt       = document.createElement("option");
+    opt.value       = guest.id;
+    opt.textContent = `${guest.prenom}\n${guest.nom}`;
+    sel.insertBefore(opt, sel.querySelector(`option[value="${GENERIC_VALUE}"]`));
+  }
+
+  // Joueur (Keycloak ou « jeux ») correspondant à la valeur d'un select.
+  _findPlayer(value) {
+    const id = parseInt(value);
+    return this.players.find(p => p.id === id) ?? this.guests.get(id) ?? null;
   }
 
   _updatePlayerHeader(j) {
@@ -120,8 +148,8 @@ export class GameScore {
     const nom = document.createElement("span");
     nom.className = "player-nom";
 
-    if (sel.value && sel.value !== "__new__") {
-      const player = this.players.find(p => p.id === parseInt(sel.value));
+    if (sel.value && sel.value !== GENERIC_VALUE) {
+      const player = this._findPlayer(sel.value);
       prenom.textContent = player?.prenom ?? "";
       nom.textContent    = player?.nom    ?? "";
     } else {
@@ -141,8 +169,8 @@ export class GameScore {
     let maxLen = 0;
     for (let j = 1; j <= this.nbJoueurs; j++) {
       const sel = document.getElementById(`player_j${j}`);
-      if (!sel?.value || sel.value === "__new__") continue;
-      const player = this.players.find(p => p.id === parseInt(sel.value));
+      if (!sel?.value || sel.value === GENERIC_VALUE) continue;
+      const player = this._findPlayer(sel.value);
       if (!player) continue;
       maxLen = Math.max(maxLen, player.prenom.length, player.nom.length);
     }
@@ -220,7 +248,7 @@ export class GameScore {
       const nameEl = document.getElementById(`score-card-name-j${j}`);
       if (nameEl && sel) {
         const txt = sel.options[sel.selectedIndex]?.text;
-        nameEl.textContent = (txt && sel.value && sel.value !== "__new__") ? txt : `J${j}`;
+        nameEl.textContent = (txt && sel.value && sel.value !== GENERIC_VALUE) ? txt : `J${j}`;
       }
     }
 
@@ -348,8 +376,8 @@ export class GameScore {
     const result = [];
     for (let j = 1; j <= this.nbJoueurs; j++) {
       const sel      = document.getElementById(`player_j${j}`);
-      const playerId = sel?.value && sel.value !== "__new__" ? parseInt(sel.value) : null;
-      const player   = this.players.find(p => p.id === playerId) ?? null;
+      const playerId = sel?.value && sel.value !== GENERIC_VALUE ? parseInt(sel.value) : null;
+      const player   = playerId === null ? null : this._findPlayer(playerId);
       result.push({
         joueur: j,
         id:     playerId,

@@ -1,9 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════
    submitScore.js — Envoi du score au serveur — Très Futé
 
-   Ouvre une modale permettant de choisir (ou créer) un joueur et une
-   partie, affiche le score courant (calculé par calculScore.js) et
-   l'envoie au serveur via l'API du blueprint tresFute.
+   Ouvre une modale permettant de choisir un joueur et une partie
+   (ou de créer une partie), affiche le score courant (calculé par
+   calculScore.js) et l'envoie au serveur via l'API du blueprint tresFute.
+
+   Joueur :
+   - compte Keycloak « jeux » (partagé) : liste de ses joueurs + création
+     d'un nouveau joueur (prénom, nom) ;
+   - autre compte : liste des utilisateurs Keycloak, son propre joueur
+     est présélectionné ; l'entrée « jeux » ouvre le modal de choix d'un
+     joueur de « jeux » (guest-picker.js).
+   PLAYERS_URL, PLAYER_ME_URL et GUESTS_URL sont injectés par baseScore.html.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -65,33 +73,58 @@
 
   /* ── Chargement des listes ────────────────────────────────── */
 
-  async function chargerJoueurs() {
-    const res = await fetch(`${API_BASE}/api/joueurs`);
-    if (!res.ok) throw new Error("Impossible de charger la liste des joueurs.");
-    const joueurs = await res.json();
+  const GENERIC_VALUE = '__generic__';
+  let precedent = '';
 
-    viderOptions(selectJoueur);
-    joueurs
-      .slice()
-      .sort((a, b) => `${a.nom}${a.prenom}`.localeCompare(`${b.nom}${b.prenom}`))
-      .forEach((j) => {
-        const opt = document.createElement('option');
-        opt.value = String(j.id);
-        opt.textContent = `${j.prenom} ${j.nom}`;
-        selectJoueur.insertBefore(opt, optionNouveau(selectJoueur));
-      });
+  function ajouterOptionJoueur(j, avantGenerique = false) {
+    const opt = document.createElement('option');
+    opt.value = String(j.id);
+    opt.textContent = `${j.prenom} ${j.nom}`;
+    const generique = avantGenerique && selectJoueur.querySelector(`option[value="${GENERIC_VALUE}"]`);
+    selectJoueur.insertBefore(opt, generique || null);
+    return opt;
   }
 
-  // Preselectionne le joueur connecte (facultatif : on ignore toute erreur)
-  async function selectionnerJoueurCourant() {
+  async function chargerJoueurs() {
+    // Qui est connecté ? (échec toléré : on se comporte comme un compte ordinaire)
+    let moi = {};
     try {
-      const res = await fetch(`${API_BASE}/api/joueur-courant`);
-      if (!res.ok) return;
-      const courant = await res.json();
-      if (courant && courant.id != null && selectJoueur.querySelector(`option[value="${courant.id}"]`)) {
-        selectJoueur.value = String(courant.id);
+      const r = await fetch(PLAYER_ME_URL);
+      if (r.ok) moi = await r.json();
+    } catch (_) { /* ignoré */ }
+
+    // On repart d'un select vide (placeholder uniquement)
+    [...selectJoueur.options].forEach((opt) => { if (opt.value !== '') opt.remove(); });
+
+    if (moi.generic) {
+      // Compte « jeux » : ses joueurs + création d'un nouveau
+      const res = await fetch(GUESTS_URL);
+      if (!res.ok) throw new Error("Impossible de charger la liste des joueurs.");
+      (await res.json()).forEach((j) => ajouterOptionJoueur(j));
+
+      const nouveau = document.createElement('option');
+      nouveau.value = '__new__';
+      nouveau.textContent = '➕ Nouveau joueur…';
+      selectJoueur.appendChild(nouveau);
+    } else {
+      // Compte ordinaire : utilisateurs Keycloak (+ entrée « jeux » → choix d'un de ses joueurs)
+      const res = await fetch(PLAYERS_URL);
+      if (!res.ok) throw new Error("Impossible de charger la liste des joueurs.");
+      (await res.json()).forEach((j) => {
+        if (j.generic) {
+          const opt = document.createElement('option');
+          opt.value = GENERIC_VALUE;
+          opt.textContent = `${j.prenom} (choisir un joueur…)`;
+          selectJoueur.appendChild(opt);
+        } else {
+          ajouterOptionJoueur(j);
+        }
+      });
+      if (moi.joueur && moi.joueur.id != null && selectJoueur.querySelector(`option[value="${moi.joueur.id}"]`)) {
+        selectJoueur.value = String(moi.joueur.id); // présélection de son propre joueur
       }
-    } catch (_) { /* pas de presélection */ }
+    }
+    precedent = selectJoueur.value;
   }
 
   async function chargerParties() {
@@ -100,7 +133,7 @@
     const parties = await res.json();
 
     viderOptions(selectPartie);
-    parties.forEach((p) => {
+    parties.filter((p) => p.nb_scores < p.nb_joueurs).forEach((p) => { // parties completes exclues
       const opt = document.createElement('option');
       opt.value = String(p.id);
       opt.textContent = `Partie #${p.id} (${p.nb_scores}/${p.nb_joueurs} joueurs)`;
@@ -123,7 +156,6 @@
 
     try {
       await Promise.all([chargerJoueurs(), chargerParties()]);
-      await selectionnerJoueurCourant();
     } catch (err) {
       afficherErreur(err.message);
     } finally {
@@ -136,9 +168,20 @@
     overlay.hidden = true;
   }
 
-  selectJoueur.addEventListener('change', () => {
-    const nouveau = selectJoueur.value === '__new__';
-    champsNvJoueur.hidden = !nouveau;
+  selectJoueur.addEventListener('change', async () => {
+    if (selectJoueur.value === GENERIC_VALUE) {
+      // Entrée « jeux » : choisir (ou créer) un de ses joueurs dans le modal
+      const joueur = await window.GuestPicker?.open();
+      if (joueur) {
+        const opt = selectJoueur.querySelector(`option[value="${joueur.id}"]`)
+          || ajouterOptionJoueur(joueur, true);
+        selectJoueur.value = opt.value;
+      } else {
+        selectJoueur.value = precedent;
+      }
+    }
+    precedent = selectJoueur.value;
+    champsNvJoueur.hidden = selectJoueur.value !== '__new__';
   });
 
   selectPartie.addEventListener('change', () => {
@@ -166,7 +209,7 @@
         throw new Error('Merci de renseigner le prénom et le nom du nouveau joueur.');
       }
 
-      const res = await fetch(`${API_BASE}/api/joueurs`, {
+      const res = await fetch(GUESTS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prenom, nom }),
@@ -176,7 +219,7 @@
       return data.id;
     }
 
-    if (!selectJoueur.value) throw new Error('Merci de choisir un joueur.');
+    if (!selectJoueur.value || selectJoueur.value === GENERIC_VALUE) throw new Error('Merci de choisir un joueur.');
     return parseInt(selectJoueur.value, 10);
   }
 

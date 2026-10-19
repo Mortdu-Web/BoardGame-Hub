@@ -1,12 +1,9 @@
 from flask import render_template, request, jsonify
-from app import users
 from app.helpers import make_blueprint, require_auth
 
 from app.db import (
-    create_joueur,
     create_partie_simple,
     get_parties_by_jeu,
-    joueur_exists,
 )
 
 from .backend.submit import submit_score
@@ -30,50 +27,15 @@ def tresFute_game():
 
 
 # ═══════════════════════════════════════════════════════════════
-#  API : joueurs (pour le formulaire d'envoi de score)
-# ═══════════════════════════════════════════════════════════════
-
-@bp.route("/api/joueurs", methods=["GET"])
-@require_auth()
-def api_get_joueurs():
-    """Retourne la liste des joueurs existants."""
-    return jsonify(users.list_players())
-
-
-@bp.route("/api/joueur-courant", methods=["GET"])
-@require_auth()
-def api_joueur_courant():
-    """Joueur correspondant a l'utilisateur connecte ({} si aucun)."""
-    return jsonify(users.current_joueur() or {})
-
-
-@bp.route("/api/joueurs", methods=["POST"])
-@require_auth()
-def api_create_joueur():
-    """Crée un nouveau joueur. Attend { "prenom": str, "nom": str }."""
-    data = request.get_json(silent=True) or {}
-    prenom = (data.get("prenom") or "").strip()
-    nom = (data.get("nom") or "").strip()
-
-    if not prenom or not nom:
-        return jsonify({"error": "Le prénom et le nom sont requis."}), 400
-
-    if joueur_exists(prenom, nom):
-        return jsonify({"error": "Ce joueur existe déjà."}), 409
-
-    joueur_id = create_joueur(prenom, nom)
-    return jsonify({"id": joueur_id, "prenom": prenom, "nom": nom}), 201
-
-
-# ═══════════════════════════════════════════════════════════════
 #  API : parties (pour le formulaire d'envoi de score)
+#  Les joueurs viennent des routes communes : jeux.players, jeux.players_me, jeux.guests
 # ═══════════════════════════════════════════════════════════════
 
 @bp.route("/api/parties", methods=["GET"])
 @require_auth()
 def api_get_parties():
-    """Retourne la liste des parties existantes pour ce jeu."""
-    return jsonify(get_parties_by_jeu(NOM_JEU))
+    """Retourne les parties de ce jeu qui ne sont pas encore completes."""
+    return jsonify(get_parties_by_jeu(NOM_JEU, incompletes_only=True))
 
 
 @bp.route("/api/parties", methods=["POST"])

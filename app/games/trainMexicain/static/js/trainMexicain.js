@@ -123,7 +123,7 @@ class TourManager {
 
   _getPlayerName(joueurIdx) {
     const sel = document.getElementById(`player_j${joueurIdx}`);
-    if (!sel || !sel.value || sel.value === "__new__") return `J${joueurIdx}`;
+    if (!sel || !sel.value || sel.value === "__generic__") return `J${joueurIdx}`;
     return sel.options[sel.selectedIndex]?.text ?? `J${joueurIdx}`;
   }
 

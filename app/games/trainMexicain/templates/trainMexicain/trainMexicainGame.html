@@ -24,7 +24,6 @@
 
 {% block game_script %}
   <script>
-    const NEW_PLAYER_URL = "{{ url_for('jeux.nouveau_joueur') }}";
     const BASE_JS_URL = "{{ url_for('jeux.static', filename='js/base.js') }}";
   </script>
   <script type="module" src="{{ url_for('trainMexicain.static', filename='js/trainMexicain.js') }}"></script>

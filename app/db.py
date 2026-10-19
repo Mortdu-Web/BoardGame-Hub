@@ -87,6 +87,13 @@ def get_all_joueurs(keycloak_only: bool = False) -> list[dict]:
     return get_db().execute(sql + " ORDER BY nom, prenom").fetchall()
 
 
+def get_guest_joueurs() -> list[dict]:
+    """Joueurs sans compte Keycloak (invites, crees depuis le hub)."""
+    return get_db().execute(
+        "SELECT id, prenom, nom FROM joueurs WHERE keycloak_id IS NULL ORDER BY nom, prenom"
+    ).fetchall()
+
+
 def get_joueur_by_keycloak_id(keycloak_id: str) -> dict | None:
     return get_db().execute(
         "SELECT id, prenom, nom FROM joueurs WHERE keycloak_id = %s", (keycloak_id,)
@@ -154,15 +161,17 @@ def create_joueur(prenom: str, nom: str) -> int:
     return row["id"]
 
 
-def add_new_player(nom: str, prenom: str) -> tuple[bool, str | None]:
-    """Utilisé par le formulaire « Nouveau joueur ». Retourne (succès, message d'erreur)."""
-    prenom, nom = prenom.strip(), nom.strip()
+def add_guest_player(prenom: str, nom: str) -> tuple[dict | None, str | None]:
+    """Cree un joueur du compte generique « jeux » (sans keycloak_id).
+
+    Retourne (joueur, None) en cas de succes, (None, message d'erreur) sinon.
+    """
+    prenom, nom = (prenom or "").strip(), (nom or "").strip()
     if not prenom or not nom:
-        return False, "Le prénom et le nom sont requis."
+        return None, "Le prénom et le nom sont requis."
     if joueur_exists(prenom, nom):
-        return False, "Ce joueur existe déjà."
-    create_joueur(prenom, nom)
-    return True, None
+        return None, "Ce joueur existe déjà."
+    return {"id": create_joueur(prenom, nom), "prenom": prenom, "nom": nom}, None
 
 
 # ── Parties & scores ─────────────────────────────────────────────────────────
@@ -224,14 +233,16 @@ def create_partie(data: dict) -> int:
     return partie_id
 
 
-def get_parties_by_jeu(jeu: str) -> list[dict]:
+def get_parties_by_jeu(jeu: str, incompletes_only: bool = False) -> list[dict]:
+    """Parties d'un jeu. incompletes_only=True : exclut celles qui ont deja tous leurs scores (3/3, 2/2...)."""
+    having = "HAVING COUNT(jp.joueur_id) < p.nb_joueurs" if incompletes_only else ""
     return get_db().execute(
-        """SELECT p.id, p.nb_joueurs, COUNT(jp.joueur_id) AS nb_scores
-           FROM parties p
-           JOIN jeux j ON j.id = p.jeu_id
-           LEFT JOIN joueurs_partie jp ON jp.partie_id = p.id
-           WHERE LOWER(REPLACE(j.name, ' ', '')) = LOWER(REPLACE(%s, ' ', ''))
-           GROUP BY p.id ORDER BY p.id DESC""",
+        f"""SELECT p.id, p.nb_joueurs, COUNT(jp.joueur_id) AS nb_scores
+            FROM parties p
+            JOIN jeux j ON j.id = p.jeu_id
+            LEFT JOIN joueurs_partie jp ON jp.partie_id = p.id
+            WHERE LOWER(REPLACE(j.name, ' ', '')) = LOWER(REPLACE(%s, ' ', ''))
+            GROUP BY p.id {having} ORDER BY p.id DESC""",
         (jeu,),
     ).fetchall()
 

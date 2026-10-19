@@ -41,3 +41,22 @@ input, select, button { font: inherit; }
 /* Éléments du bandeau d'un jeu (jeux.css) */
 .project-meta-divider { width: 1px; align-self: stretch; background: var(--line); }
 .divider { height: 1px; background: var(--line); margin: 0 0 32px; }
+
+/* Modal « joueur du compte jeux » (guest-picker.js) */
+.guest-picker { width: min(92vw, 400px); padding: 0; border: 1px solid var(--line); background: var(--surface); color: var(--accent); }
+.guest-picker::backdrop { background: rgba(0, 0, 0, .55); }
+.gp-header { display: flex; align-items: center; justify-content: space-between; padding: .9rem 1.2rem; border-bottom: 1px solid var(--line); }
+.gp-header h2 { margin: 0; font-family: "Cormorant Garamond", serif; font-weight: 600; font-size: 1.4rem; }
+.gp-close { background: none; border: 0; color: var(--muted); font-size: 1.1rem; cursor: pointer; }
+.gp-body { padding: 1rem 1.2rem 1.2rem; display: flex; flex-direction: column; gap: .75rem; }
+.gp-list { list-style: none; margin: 0; padding: 0; max-height: 40vh; overflow-y: auto; border: 1px solid var(--line); }
+.gp-list:empty { display: none; }
+.gp-list li + li { border-top: 1px solid var(--line); }
+.gp-item { display: block; width: 100%; padding: .6rem .8rem; text-align: left; background: transparent; color: var(--accent); border: 0; cursor: pointer; }
+.gp-item:hover, .gp-item:focus-visible { background: var(--bg); outline: none; }
+.gp-empty { margin: 0; color: var(--muted); font-size: .9rem; }
+.gp-new { align-self: flex-start; background: none; border: 0; padding: 0; color: var(--gold); cursor: pointer; letter-spacing: .04em; }
+.gp-fields { display: flex; gap: 8px; }
+.gp-fields input { flex: 1 1 0; min-width: 0; padding: .55rem .7rem; border: 1px solid var(--line); background: var(--surface); color: var(--accent); }
+.gp-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: .75rem; }
+.gp-error { margin: 0; color: #b42318; font-size: .85rem; }

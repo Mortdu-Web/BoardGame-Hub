@@ -23,9 +23,9 @@ app/
   helpers.py             login_required (auth_client si AUTH_ENABLED) + make_blueprint
   db.py                  SQLite : joueurs, parties, scores (seul fichier à adapter pour une autre base)
   registry.py            découverte des jeux (games/<slug>/card.json + routes.py)
-  routes.py              blueprint « jeux » : hub, /players, /joueurs/nouveau
-  templates/             base.html, hub.html, jeux/{baseJeux,baseScore,newPlayer}.html
-  static/                site.css (variables), base.css, jeux.css, hub.css, base.js (GameScore), hub.js
+  routes.py              blueprint « jeux » : hub, /players, /players/me, /players/guests
+  templates/             base.html, hub.html, jeux/{baseJeux,baseScore}.html
+  static/                site.css (variables, modal), base.css, jeux.css, hub.css, base.js (GameScore), guest-picker.js (modal joueurs de « jeux »), hub.js
   games/<slug>/          un dossier par jeu (voir ci-dessous)
 ```
 
@@ -34,6 +34,9 @@ app/
 - `<URL_PREFIX>/<slug>/` : présentation du jeu
 - `<URL_PREFIX>/<slug>/game` : tableau des scores (ohanami, skyjo, trainMexicain, tresFute)
 - `<URL_PREFIX>/<slug>/submit` : enregistrement des scores (POST JSON)
+- `<URL_PREFIX>/players` : utilisateurs Keycloak + une entrée `{generic: true}` pour le compte « jeux »
+- `<URL_PREFIX>/players/me` : `{generic, joueur}` pour l'utilisateur connecté
+- `<URL_PREFIX>/players/guests` : GET = joueurs du compte « jeux » ; POST `{prenom, nom}` = en créer un
 
 ## Ajouter un jeu
 Créer `app/games/<slug>/` avec :
@@ -49,7 +52,19 @@ présentation) comme modèle.
 ## Données
 Les joueurs, parties et scores sont stockés dans une base **PostgreSQL hébergée sur une autre machine**.
 Renseigner dans le `.env` : `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
-Les tables sont créées automatiquement au démarrage si elles n'existent pas. Le serveur PostgreSQL doit accepter
+Tables utilisées : `jeux`, `joueurs` (avec `keycloak_id`, voir `migrations/`), `parties`, `joueurs_partie`.
+Elles doivent déjà exister (`DB_AUTO_CREATE=true` les crée sur une base vide). Les joueurs proposés sont les
+utilisateurs Keycloak, via `GET /api/users` du service d'auth.
+
+### Compte « jeux » (`AUTH_GENERIC_USERNAME`)
+C'est le seul compte Keycloak qui regroupe plusieurs joueurs : ses joueurs sont les lignes de `joueurs` **sans**
+`keycloak_id`. Aucune migration n'est nécessaire.
+- **Tableaux de scores à plusieurs colonnes** (Ohanami, Skyjo, Train Mexicain) : chaque colonne liste les utilisateurs
+  Keycloak ; choisir « Jeux » ouvre un modal pour sélectionner l'un de ses joueurs ou en créer un (prénom, nom).
+- **Très Futé** : connecté en « jeux », la modale d'envoi liste directement les joueurs de « jeux » (et permet d'en créer) ;
+  avec un autre compte, le joueur de l'utilisateur est présélectionné et l'entrée « Jeux » ouvre le même modal.
+- Sans auth (dev local) ou si Keycloak est injoignable : seuls les joueurs déjà rattachés à un compte Keycloak sont listés,
+  plus l'entrée « Jeux » (les autres joueurs passent par le modal). Le serveur PostgreSQL doit accepter
 les connexions depuis la machine qui héberge le conteneur (`listen_addresses`, `pg_hba.conf`, pare-feu).
 
 ## Docker

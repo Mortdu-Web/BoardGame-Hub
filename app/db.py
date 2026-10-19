@@ -10,25 +10,28 @@ from psycopg.rows import dict_row
 SCHEMA = """
 SELECT pg_advisory_xact_lock(727001);  -- evite les courses entre workers gunicorn au demarrage
 
+CREATE TABLE IF NOT EXISTS jeux (
+    id                 SERIAL PRIMARY KEY,
+    name               VARCHAR(50),
+    victoire_score_max BOOLEAN NOT NULL DEFAULT false
+);
 CREATE TABLE IF NOT EXISTS joueurs (
-    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    prenom      TEXT NOT NULL,
-    nom         TEXT NOT NULL,
+    id          SERIAL PRIMARY KEY,
+    prenom      VARCHAR(100) NOT NULL,
+    nom         VARCHAR(100) NOT NULL,
     keycloak_id TEXT UNIQUE
 );
-CREATE UNIQUE INDEX IF NOT EXISTS joueurs_nom_prenom_uniq ON joueurs (LOWER(prenom), LOWER(nom));
-
 CREATE TABLE IF NOT EXISTS parties (
-    id         INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    jeu        TEXT NOT NULL,
-    nb_joueurs INTEGER NOT NULL CHECK (nb_joueurs >= 1),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    id         SERIAL PRIMARY KEY,
+    jeu_id     INTEGER NOT NULL REFERENCES jeux(id) ON DELETE CASCADE,
+    date       DATE NOT NULL DEFAULT CURRENT_DATE,
+    nb_joueurs INTEGER NOT NULL
 );
-CREATE TABLE IF NOT EXISTS joueur_partie (
-    joueur_id INTEGER NOT NULL REFERENCES joueurs(id),
-    partie_id INTEGER NOT NULL REFERENCES parties(id),
-    score     INTEGER NOT NULL,
-    PRIMARY KEY (joueur_id, partie_id)
+CREATE TABLE IF NOT EXISTS joueurs_partie (
+    id        SERIAL PRIMARY KEY,
+    joueur_id INTEGER NOT NULL REFERENCES joueurs(id) ON DELETE CASCADE,
+    partie_id INTEGER NOT NULL REFERENCES parties(id) ON DELETE CASCADE,
+    score     INTEGER NOT NULL
 );
 """
 
@@ -164,12 +167,26 @@ def add_new_player(nom: str, prenom: str) -> tuple[bool, str | None]:
 
 # ── Parties & scores ─────────────────────────────────────────────────────────
 
+def _jeu_id(jeu: str) -> int:
+    """id dans `jeux` ; nom compare sans casse ni espaces ("trainMexicain" = "Train Mexicain")."""
+    row = get_db().execute(
+        """SELECT id FROM jeux
+           WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE(%s, ' ', ''))
+           ORDER BY id LIMIT 1""",
+        (jeu,),
+    ).fetchone()
+    if row is None:
+        raise ValueError(f"Jeu inconnu dans la base : {jeu!r}.")
+    return row["id"]
+
+
 def create_partie_simple(jeu: str, nb_joueurs: int) -> int:
     if nb_joueurs < 1:
         raise ValueError("Le nombre de joueurs doit être supérieur à 0.")
     db = get_db()
     row = db.execute(
-        "INSERT INTO parties (jeu, nb_joueurs) VALUES (%s, %s) RETURNING id", (jeu, nb_joueurs)
+        "INSERT INTO parties (jeu_id, nb_joueurs) VALUES (%s, %s) RETURNING id",
+        (_jeu_id(jeu), nb_joueurs),
     ).fetchone()
     db.commit()
     return row["id"]
@@ -187,16 +204,17 @@ def create_partie(data: dict) -> int:
     except (TypeError, ValueError) as exc:
         raise ValueError("Identifiant de joueur ou score invalide.") from exc
 
+    jeu_id = _jeu_id(data["jeu"])
     db = get_db()
     try:
         row = db.execute(
-            "INSERT INTO parties (jeu, nb_joueurs) VALUES (%s, %s) RETURNING id",
-            (data["jeu"], data["nb_joueurs"]),
+            "INSERT INTO parties (jeu_id, nb_joueurs) VALUES (%s, %s) RETURNING id",
+            (jeu_id, data["nb_joueurs"]),
         ).fetchone()
         partie_id = row["id"]
         with db.cursor() as cur:
             cur.executemany(
-                "INSERT INTO joueur_partie (joueur_id, partie_id, score) VALUES (%s, %s, %s)",
+                "INSERT INTO joueurs_partie (joueur_id, partie_id, score) VALUES (%s, %s, %s)",
                 [(jid, partie_id, score) for jid, score in lignes],
             )
         db.commit()
@@ -209,8 +227,11 @@ def create_partie(data: dict) -> int:
 def get_parties_by_jeu(jeu: str) -> list[dict]:
     return get_db().execute(
         """SELECT p.id, p.nb_joueurs, COUNT(jp.joueur_id) AS nb_scores
-           FROM parties p LEFT JOIN joueur_partie jp ON jp.partie_id = p.id
-           WHERE p.jeu = %s GROUP BY p.id ORDER BY p.id DESC""",
+           FROM parties p
+           JOIN jeux j ON j.id = p.jeu_id
+           LEFT JOIN joueurs_partie jp ON jp.partie_id = p.id
+           WHERE LOWER(REPLACE(j.name, ' ', '')) = LOWER(REPLACE(%s, ' ', ''))
+           GROUP BY p.id ORDER BY p.id DESC""",
         (jeu,),
     ).fetchall()
 
@@ -221,20 +242,21 @@ def insert_joueur_partie(joueur_id: int, partie_id: int, score: int) -> None:
     if partie is None:
         raise ValueError("Partie introuvable.")
     deja = db.execute(
-        "SELECT 1 FROM joueur_partie WHERE joueur_id = %s AND partie_id = %s", (joueur_id, partie_id)
+        "SELECT id FROM joueurs_partie WHERE joueur_id = %s AND partie_id = %s", (joueur_id, partie_id)
     ).fetchone()
-    if deja is None:
-        nb = db.execute(
-            "SELECT COUNT(*) AS n FROM joueur_partie WHERE partie_id = %s", (partie_id,)
-        ).fetchone()["n"]
-        if nb >= partie["nb_joueurs"]:
-            raise ValueError("Cette partie a déjà tous ses scores.")
     try:
-        db.execute(
-            """INSERT INTO joueur_partie (joueur_id, partie_id, score) VALUES (%s, %s, %s)
-               ON CONFLICT (joueur_id, partie_id) DO UPDATE SET score = EXCLUDED.score""",
-            (joueur_id, partie_id, score),
-        )
+        if deja is not None:  # pas de contrainte d'unicite en base : on met a jour la ligne existante
+            db.execute("UPDATE joueurs_partie SET score = %s WHERE id = %s", (score, deja["id"]))
+        else:
+            nb = db.execute(
+                "SELECT COUNT(*) AS n FROM joueurs_partie WHERE partie_id = %s", (partie_id,)
+            ).fetchone()["n"]
+            if nb >= partie["nb_joueurs"]:
+                raise ValueError("Cette partie a déjà tous ses scores.")
+            db.execute(
+                "INSERT INTO joueurs_partie (joueur_id, partie_id, score) VALUES (%s, %s, %s)",
+                (joueur_id, partie_id, score),
+            )
         db.commit()
     except psycopg.errors.IntegrityError as exc:
         db.rollback()

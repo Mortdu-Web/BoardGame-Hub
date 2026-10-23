@@ -19,6 +19,7 @@ class Config:
     URL_PREFIX = os.getenv("URL_PREFIX", "").rstrip("/")
     PUBLIC_URL = os.getenv("PUBLIC_URL", "http://localhost:5000").rstrip("/")
     BEHIND_PROXY = _bool("BEHIND_PROXY", False)
+    HUB_APP_URL = os.getenv("HUB_APP_URL", "").strip()
 
     # Base PostgreSQL hébergée sur une autre machine (voir .env).
     DB_HOST = os.getenv("DB_HOST", "")

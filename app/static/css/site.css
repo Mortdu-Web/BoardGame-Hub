@@ -60,3 +60,6 @@ input, select, button { font: inherit; }
 .gp-fields input { flex: 1 1 0; min-width: 0; padding: .55rem .7rem; border: 1px solid var(--line); background: var(--surface); color: var(--accent); }
 .gp-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: .75rem; }
 .gp-error { margin: 0; color: #b42318; font-size: .85rem; }
+.topbar-link { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color .2s; }
+.topbar-link:hover { color: var(--accent); }
+.topbar-link::before { content: "←"; margin-right: 8px; }
